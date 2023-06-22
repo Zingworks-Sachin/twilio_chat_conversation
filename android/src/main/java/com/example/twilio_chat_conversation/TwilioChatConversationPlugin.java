@@ -48,7 +48,7 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
     switch (call.method) {
       case Methods.generateToken:
         String accessToken = ConversationHandler.generateAccessToken(call.argument("accountSid"),call.argument("apiKey"),call.argument("apiSecret"),call.argument("identity"));
-        System.out.println("accessToken generated->"+accessToken);
+//        System.out.println("accessToken generated->"+accessToken);
         ConversationHandler.init(accessToken,result);
         break;
 
@@ -58,7 +58,6 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
 
       case Methods.getConversations:
         List<Map<String, Object>> conversationList = ConversationHandler.getConversationsList();
-        System.out.println("conversationList->"+conversationList.toString());
         result.success(conversationList);
         break;
 
@@ -68,7 +67,6 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
 
       case Methods.joinConversation:
         String joinStatus =  ConversationHandler.joinConversation(call.argument("conversationId"));
-        System.out.println("joinStatus->"+ joinStatus);
         result.success(joinStatus);
         break;
 

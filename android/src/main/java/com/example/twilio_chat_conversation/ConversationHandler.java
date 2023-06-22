@@ -35,32 +35,27 @@ class ConversationHandler {
 
         // Build the token
         AccessToken token = builder.build();
-//    generateAccessToken = token.toJwt();
         return token.toJwt();
     }
-    protected static String createConversation(String conversationName, String identity, MethodChannel.Result result) {
-        final String[] conversationId = {""};
+    protected static void createConversation(String conversationName, String identity, MethodChannel.Result result) {
         conversationClient.createConversation(conversationName, new CallbackListener<Conversation>() {
 
             @Override
             public void onSuccess(Conversation conversations) {
                 System.out.println("conversation-" + conversationName);
-                conversationId[0] = conversations.getSid();
                 addParticipant(identity, conversationName, result);
-                result.success("Conversation created successfully.");
+                result.success(Strings.createConversationSuccess);
             }
 
             @Override
             public void onError(ErrorInfo errorInfo) {
                 System.out.println("onError->" + errorInfo.getMessage());
-                result.success("Error While Creating Conversation");
+                result.success(Strings.createConversationFailure);
                 CallbackListener.super.onError(errorInfo);
             }
         });
-        return conversationId[0];
     }
     protected static void addParticipant(String participantName, String conversationId, MethodChannel.Result result){
-
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
 
             @Override
@@ -70,15 +65,16 @@ class ConversationHandler {
                     @Override
                     public void onSuccess() {
                         System.out.println("added successfully->"+conversationId);
-                        List<Participant> participantList = conversation.getParticipantsList();
-                        System.out.println("participantList->"+participantList.toString());
-                        result.success("added successfully");
+//                        List<Participant> participantList = conversation.getParticipantsList();
+//                        System.out.println("participantList->"+participantList.toString());
+                        result.success(Strings.addParticipantSuccess);
                     }
 
                     @Override
                     public void onError(ErrorInfo errorInfo) {
-                        result.success("Error While Adding");
                         StatusListener.super.onError(errorInfo);
+                        System.out.println("addParticipant error->"+errorInfo.getMessage());
+                        result.success(errorInfo.getMessage());
                     }
                 });
             }
@@ -99,13 +95,11 @@ class ConversationHandler {
 
                     @Override
                     public void onSuccess() {
-                        System.out.println("joined->");
                         receiveMessages(conversationId);
-                        // sendMessages();
                     }
                     @Override
                     public void onError(ErrorInfo errorInfo) {
-                        System.out.println("client12-" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
+                        System.out.println("joinConversation error->" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
 
                         StatusListener.super.onError(errorInfo);
                     }
@@ -121,7 +115,6 @@ class ConversationHandler {
         return conversationId;
     }
     protected static void sendMessages(String enteredMessage, String conversationId, boolean isFromChatGpt, MethodChannel.Result result){
-
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
 
             @Override
@@ -134,7 +127,6 @@ class ConversationHandler {
                         .setBody(enteredMessage)
                         .buildAndSend(new CallbackListener() {
 
-
                             @Override
                             public void onSuccess(Object data) {
                                 System.out.println("send");
@@ -144,8 +136,7 @@ class ConversationHandler {
 
                             @Override
                             public void onError(ErrorInfo errorInfo) {
-                                System.out.println("client12-" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
-
+                                System.out.println("sendMessages error->" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
                             }
                         });
             }
@@ -167,50 +158,39 @@ class ConversationHandler {
                 result.addListener(new ConversationListener() {
                     @Override
                     public void onMessageAdded(Message message) {
-                        System.out.println("message"+message.getBody());
-
-                        System.out.println("message"+message.getParticipant().getSid());
                     }
 
                     @Override
                     public void onMessageUpdated(Message message, Message.UpdateReason reason) {
-
                     }
 
                     @Override
                     public void onMessageDeleted(Message message) {
-
                     }
 
                     @Override
                     public void onParticipantAdded(Participant participant) {
-
                     }
 
                     @Override
                     public void onParticipantUpdated(Participant participant, Participant.UpdateReason reason) {
-
                     }
 
 
                     @Override
                     public void onParticipantDeleted(Participant participant) {
-
                     }
 
                     @Override
                     public void onTypingStarted(Conversation conversation, Participant participant) {
-
                     }
 
                     @Override
                     public void onTypingEnded(Conversation conversation, Participant participant) {
-
                     }
 
                     @Override
                     public void onSynchronizationChanged(Conversation conversation) {
-
                     }
                 });
             }
@@ -286,7 +266,7 @@ class ConversationHandler {
             public void onSuccess(ConversationsClient client) {
                 System.out.println("client11-" + client.getMyIdentity());
                 ConversationHandler.conversationClient = client;
-                result.success("Authentication Successful");
+                result.success(Strings.authenticationSuccessful);
             }
 
             @Override
@@ -305,11 +285,9 @@ class ConversationHandler {
                 List<String> participants = new ArrayList<>();
 
                 for (int i=0;i<participantList.size();i++){
-                    System.out.println(participantList.get(i).getIdentity()+"--"+participantList.get(i).getSid());
                     participants.add(participantList.get(i).getIdentity());
                     System.out.println("getParticipants->" + participants);
                 }
-//        System.out.println("getParticipants->" + participantList.toString());
                 result.success(participants);
             }
 
