@@ -1,3 +1,9 @@
+<br>
+<p align="center">
+<img alt="FlutterBlue" src="https://github.com/Zingworks-Sachin/twilio_chat_conversation/blob/main/assets/images/twilio_logo_red.svg?raw=true" />
+</p>
+<br><br>
+
 # twilio_chat_conversation
 
 A Flutter plugin for [Twilio Conversations](https://www.twilio.com/docs/conversations) which allows you to build engaging conversational messaging experiences for Android and iOS. 
@@ -57,5 +63,5 @@ final String? result = await twilioChatConversationPlugin.addParticipant(partici
 ```
 
 #### Developed By
-Sachin Pandit
+Sachin Pandit\n
 [ZingWorks LLP](https://zingworks.in/)
