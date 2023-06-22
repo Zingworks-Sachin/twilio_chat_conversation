@@ -62,6 +62,7 @@ final  List result = await twilioChatConversationPlugin.getMessages(conversation
 final String? result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId);
 ```
 
+
 Developed By
--Sachin Pandit
+- Sachin Pandit
 [ZingWorks LLP](https://zingworks.in/)
