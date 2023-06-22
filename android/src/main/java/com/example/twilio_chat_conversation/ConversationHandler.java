@@ -64,16 +64,14 @@ class ConversationHandler {
                 conversation.addParticipantByIdentity(participantName,null,new StatusListener() {
                     @Override
                     public void onSuccess() {
-                        System.out.println("added successfully->"+conversationId);
-//                        List<Participant> participantList = conversation.getParticipantsList();
-//                        System.out.println("participantList->"+participantList.toString());
+//                        System.out.println("added successfully->"+conversationId);
                         result.success(Strings.addParticipantSuccess);
                     }
 
                     @Override
                     public void onError(ErrorInfo errorInfo) {
                         StatusListener.super.onError(errorInfo);
-                        System.out.println("addParticipant error->"+errorInfo.getMessage());
+//                        System.out.println("addParticipant error->"+errorInfo.getMessage());
                         result.success(errorInfo.getMessage());
                     }
                 });
