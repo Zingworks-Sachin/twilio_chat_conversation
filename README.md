@@ -4,7 +4,7 @@
 </p>
 <br><br>
 
-# twilio_chat_conversation
+# Introduction
 
 A Flutter plugin for [Twilio Conversations](https://www.twilio.com/docs/conversations) which allows you to build engaging conversational messaging experiences for Android and iOS. 
 
@@ -62,6 +62,6 @@ final  List result = await twilioChatConversationPlugin.getMessages(conversation
 final String? result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId);
 ```
 
-#### Developed By
-Sachin Pandit\n
+Developed By
+Sachin Pandit
 [ZingWorks LLP](https://zingworks.in/)
