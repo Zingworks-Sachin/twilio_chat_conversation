@@ -63,6 +63,6 @@ final String? result = await twilioChatConversationPlugin.addParticipant(partici
 ```
 
 
-Developed By
-- Sachin Pandit
+Developed By - 
+Sachin Pandit
 [ZingWorks LLP](https://zingworks.in/)
