@@ -57,5 +57,5 @@ final String? result = await twilioChatConversationPlugin.addParticipant(partici
 ```
 
 ### Developed By
-Sachin Pandit
+Sachin Pandit.
 [ZingWorks LLP](https://zingworks.in/)
