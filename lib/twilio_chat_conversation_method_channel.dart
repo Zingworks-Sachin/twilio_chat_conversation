@@ -41,8 +41,8 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
   }
 
   @override
-  Future<List?> getMessagesFromConversation({required String conversationId}) async {
-    final  List? messages = await methodChannel.invokeMethod('getMessagesFromConversation',{
+  Future<List?> getMessages({required String conversationId}) async {
+    final  List? messages = await methodChannel.invokeMethod('getMessages',{
       "conversationId":conversationId
     });
     print("messages->$messages");

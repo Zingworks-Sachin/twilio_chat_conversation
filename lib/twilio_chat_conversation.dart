@@ -18,8 +18,8 @@ class TwilioChatConversation {
     return TwilioChatConversationPlatform.instance.getConversations();
   }
 
-  Future<List?> getMessagesFromConversation({required String conversationId}) {
-    return TwilioChatConversationPlatform.instance.getMessagesFromConversation(conversationId:conversationId);
+  Future<List?> getMessages({required String conversationId}) {
+    return TwilioChatConversationPlatform.instance.getMessages(conversationId:conversationId);
   }
 
   Future<String?> joinConversation({required String conversationId}) {

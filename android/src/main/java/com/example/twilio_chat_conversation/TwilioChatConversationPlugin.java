@@ -16,8 +16,6 @@ import com.twilio.jwt.accesstoken.AccessToken;
 import com.twilio.jwt.accesstoken.ChatGrant;
 import com.twilio.util.ErrorInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +59,7 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
         result.success(conversationList);
         break;
 
-      case Methods.getMessagesFromConversation:
+      case Methods.getMessages:
         ConversationHandler.getAllMessages(call.argument("conversationId"),result);
         break;
 
