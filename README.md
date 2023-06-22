@@ -69,5 +69,5 @@ final String? result = await twilioChatConversationPlugin.addParticipant(partici
 If you have any suggestions for including a feature or if something doesn't work, feel free to open a Github [issue](https://github.com/Zingworks-Sachin/twilio_chat_conversation/issues) or to open a [pull request](https://github.com/Zingworks-Sachin/twilio_chat_conversation/pulls), you are more than welcome to contribute!
 
 ## Contributors
-Sachin Pandit
-[ZingWorks LLP](https://zingworks.in/)
+- Sachin Pandit
+- [ZingWorks LLP](https://zingworks.in/)
