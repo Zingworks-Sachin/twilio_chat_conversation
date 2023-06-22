@@ -17,7 +17,7 @@ Check out the [example](https://github.com/Zingworks-Sachin/twilio_chat_conversa
 final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
 ```
 
-### Generate Token and authenticate user
+### Generate token and authenticate user
 ```dart
 final String? result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity']);
 ```
@@ -56,7 +56,6 @@ final  List result = await twilioChatConversationPlugin.getMessages(conversation
 final String? result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId);
 ```
 
-### Developed By
+#### Developed By
 Sachin Pandit
-```
 [ZingWorks LLP](https://zingworks.in/)
