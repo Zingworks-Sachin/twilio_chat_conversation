@@ -62,6 +62,8 @@ final  List result = await twilioChatConversationPlugin.getMessages(conversation
 final String? result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId);
 ```
 
+## License
+[MIT License](https://github.com/Zingworks-Sachin/twilio_chat_conversation/blob/main/LICENSE)
 
 Developed By - 
 Sachin Pandit
