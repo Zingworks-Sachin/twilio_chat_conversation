@@ -1,6 +1,6 @@
 <br>
 <p align="center">
-<img alt="FlutterBlue" src="https://github.com/Zingworks-Sachin/twilio_chat_conversation/blob/main/assets/images/twilio_logo_red.svg?raw=true" />
+<img alt="FlutterBlue" src="https://github.com/Zingworks-Sachin/twilio_chat_conversation/blob/main/assets/images/twilio_flutter_logo.svg?raw=true" />
 </p>
 <br><br>
 
