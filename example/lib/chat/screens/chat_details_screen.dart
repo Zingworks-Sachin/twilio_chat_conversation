@@ -44,8 +44,8 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     chatBloc = BlocProvider.of<ChatBloc>(context);
     chatBloc!
         .add(ReceiveMessageEvent(conversationName: widget.conversationSid));
-    print("identity");
-    print(widget.identity);
+    // print("identity");
+    //print(widget.identity);
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _controller.animateTo(
         0.0,
@@ -99,7 +99,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                     msgController: msgController,
                     haveValidation: true,
                     onSend: (typeMessage) {
-                      print("typeMessage-" + typeMessage.toString());
+                      //print("typeMessage-" + typeMessage.toString());
                       List<String>? substrings = typeMessage.split(",");
                       if (substrings[0].contains("ChatGPT")) {
                         chatBloc!.add(SendMessageEvent(

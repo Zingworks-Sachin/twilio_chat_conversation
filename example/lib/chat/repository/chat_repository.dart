@@ -29,7 +29,7 @@ class ChatRepositoryImpl implements ChatRepository {
       // final String result = await platform.invokeMethod('createConversation',
       //     {"conversationName": conversationName, "identity": identity});
       final String result = await twilioChatConversationPlugin.createConversation(conversationName:conversationName, identity: identity) ?? "UnImplemented Error";
-      print("createConversation result-->$result");
+      //print("createConversation result-->$result");
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -50,7 +50,7 @@ class ChatRepositoryImpl implements ChatRepository {
       //   "identity": credentials['identity']
       // });
       response = result;
-      print("generateToken result-->$response");
+      //print("generateToken result-->$response");
       return response;
     } on PlatformException catch (e) {
       response = e.message.toString();
@@ -78,7 +78,7 @@ class ChatRepositoryImpl implements ChatRepository {
       // final String result = await platform.invokeMethod(
       //     'joinConversation', {"conversationName": conversationName});
       final String result = await twilioChatConversationPlugin.joinConversation(conversationId:conversationId) ?? "UnImplemented Error";
-      print("joinConversation result-->$result");
+      //print("joinConversation result-->$result");
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -130,7 +130,7 @@ class ChatRepositoryImpl implements ChatRepository {
       // final List result = await platform
       //     .invokeMethod('seeMyConversations', {"mobileNumber": ""});
       final List result = await twilioChatConversationPlugin.getConversations() ?? [];
-      print("seeMyConversations->$result");
+      //print("seeMyConversations->$result");
       // print(result.length.toString());
       response = result;
 
@@ -149,7 +149,7 @@ class ChatRepositoryImpl implements ChatRepository {
       // final List result = await platform
       //     .invokeMethod('getMessages', {"conversationName": conversationName});
       final  List result = await twilioChatConversationPlugin.getMessages(conversationId: conversationId) ?? [];
-      print("getMessages result->$result");
+      //print("getMessages result->$result");
       // print(result.length.toString());
       response = result;
 
@@ -175,11 +175,11 @@ class ChatRepositoryImpl implements ChatRepository {
     List response = [];
     try {
       final  List result = await twilioChatConversationPlugin.getParticipants(conversationId: conversationId) ?? [];
-      print("getParticipants result->$result");
+      //print("getParticipants result->$result");
       response = result;
       return response;
     } on PlatformException catch (e) {
-      print("getParticipants error->$e");
+      //print("getParticipants error->$e");
       return [];
     }
   }

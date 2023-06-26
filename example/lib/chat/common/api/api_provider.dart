@@ -149,7 +149,7 @@ class ApiProvider {
   static Future<List<ChatModel>> sendMessageGPT(
       {required String message, required String modelId}) async {
     String? apiKey = await getEnvironmentKey();
-    print("sendMessageGPT=$message-$modelId");
+    //print("sendMessageGPT=$message-$modelId");
     try {
       var response = await http.post(
         Uri.parse("${ApiConstants.baseUrl}/chat/completions"),
@@ -173,9 +173,9 @@ class ApiProvider {
       Map jsonResponse = jsonDecode(response.body);
 
       // Map jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-      print("jsonResponse $jsonResponse");
+      //print("jsonResponse $jsonResponse");
       if (jsonResponse['error'] != null) {
-        print("jsonResponse['error'] ${jsonResponse['error']["message"]}");
+        //print("jsonResponse['error'] ${jsonResponse['error']["message"]}");
         throw HttpException(jsonResponse['error']["message"]);
       }
       List<ChatModel> chatList = [];
@@ -240,8 +240,8 @@ class ApiProvider {
 
   static Future<String?> getEnvironmentKey() async {
     final env = await parseStringToMap(assetsFileName: '.env');
-    print("env");
-    print(env['API_KEY']);
+    //print("env");
+    //print(env['API_KEY']);
     return env['API_KEY'];
   }
 
@@ -259,8 +259,8 @@ class ApiProvider {
         environment[contents[0]] = contents.sublist(1).join('=');
       }
     }
-    print("environment.toString()");
-    print(environment.toString());
+    //print("environment.toString()");
+    //print(environment.toString());
     return environment;
   }
 }

@@ -1,7 +1,9 @@
 name: twilio_chat_conversation
-description: A new Flutter project.
+description: A flutter plugin to initiate Twilio Conversations.
 version: 0.0.1
-homepage:
+homepage: https://github.com/Zingworks-Sachin/twilio_chat_conversation
+repository: https://github.com/Zingworks-Sachin/twilio_chat_conversation
+issue_tracker: https://github.com/Zingworks-Sachin/twilio_chat_conversation/issues
 
 environment:
   sdk: '>=2.19.2 <3.0.0'
