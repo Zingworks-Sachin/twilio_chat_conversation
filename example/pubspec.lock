@@ -304,10 +304,11 @@ packages:
   twilio_chat_conversation:
     dependency: "direct main"
     description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: twilio_chat_conversation
+      sha256: "15cea162de8674556aef7973c24ecb7a06bbc27f765de164fdb26eace0fc752c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   typed_data:
     dependency: transitive
     description:
