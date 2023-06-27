@@ -1,12 +1,15 @@
+[![pub package](https://img.shields.io/pub/v/twilio_chat_conversation.svg)](https://pub.dartlang.org/packages/twilio_chat_conversation)
+
 <br>
 <p align="center">
-<img alt="twilio_chat_conversation" src="https://drive.google.com/file/d/1ZXCXPtGNmXYRt5appXpkUzAQKGQclN7r/view?usp=drive_link" />
+<img alt="twilio_chat_conversation" src="https://github.com/Zingworks-Sachin/twilio_chat_conversation/blob/main/assets/images/twilio%2Bflutter.png?raw=true" />
 </p>
 <br><br>
 
 # Introduction
 
-A Flutter plugin for [Twilio Conversations](https://www.twilio.com/docs/conversations) which allows you to build engaging conversational messaging experiences for Android and iOS. 
+A Flutter plugin for [Twilio Conversations](https://www.twilio.com/docs/conversations) which allows you to build engaging conversational messaging experiences for Android and iOS.
+Currently this plugin only supports Android platform.
 
 This package is currently in development phase and should not be used for production apps.
 

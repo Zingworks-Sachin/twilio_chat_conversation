@@ -18,7 +18,7 @@ class MockTwilioChatConversationPlatform
   }
 
   @override
-  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity}) {
+  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity,required String serviceSid}) {
     // TODO: implement generateToken
     throw UnimplementedError();
   }

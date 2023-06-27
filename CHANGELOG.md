@@ -1,3 +1,7 @@
-## 0.0.2
+## 1.0.1
+* Bug fixes
+* Added method to get list of participants in a conversation
+* Updated documentation
 
-* TODO: Describe initial release.
+## 1.0.0
+* Initial Android release
