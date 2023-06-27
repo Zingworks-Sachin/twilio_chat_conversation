@@ -28,7 +28,7 @@ final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversati
 
 ### Generate token and authenticate user
 ```dart
-final String? result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity']);
+final String? result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'],serviceSid: credentials['serviceSid']);
 ```
 
 ### Create new conversation
