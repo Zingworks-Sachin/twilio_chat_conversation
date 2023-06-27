@@ -6,8 +6,8 @@ class TwilioChatConversation {
     return TwilioChatConversationPlatform.instance.getPlatformVersion();
   }
 
-  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity}) {
-    return TwilioChatConversationPlatform.instance.generateToken(accountSid: accountSid,apiKey:apiKey,apiSecret:apiSecret,identity:identity);
+  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity, required serviceSid}) {
+    return TwilioChatConversationPlatform.instance.generateToken(accountSid: accountSid,apiKey:apiKey,apiSecret:apiSecret,identity:identity,serviceSid:serviceSid);
   }
 
   Future<String?> createConversation({required String conversationName,required String identity}) {

@@ -58,6 +58,11 @@ final String? result = await twilioChatConversationPlugin.sendMessage(message:en
 final String? result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId);
 ```
 
+### Get participants from the specific conversation
+```dart
+final  List result = await twilioChatConversationPlugin.getParticipants(conversationId: conversationId) ?? [];
+```
+
 ## License
 [MIT License](https://github.com/Zingworks-Sachin/twilio_chat_conversation/blob/main/LICENSE)
 

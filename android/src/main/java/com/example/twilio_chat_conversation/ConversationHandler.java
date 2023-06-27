@@ -20,17 +20,21 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodChannel;
 
 class ConversationHandler {
+    /// Entry point for the Conversations SDK.
     protected static  ConversationsClient conversationClient;
     protected static FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
 
-    protected static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity) {
+    protected static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity, String serviceSid) {
         // Create an AccessToken builder
         AccessToken.Builder builder = new AccessToken.Builder(accountSid, apiKey, apiSecret);
         // Set the identity of the token
         builder.identity(identity);
         // Create a Chat grant and add it to the token
         ChatGrant chatGrant = new ChatGrant();
-        chatGrant.setServiceSid("IS1b4142e65b0f482fb795e2c48d028f45");
+//        chatGrant.setServiceSid("IS1b4142e65b0f482fb795e2c48d028f45");
+        System.out.println("setServiceSid->" + serviceSid);
+
+        chatGrant.setServiceSid(serviceSid);
         builder.grant(chatGrant);
 
         // Build the token

@@ -44,42 +44,51 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
 
     switch (call.method) {
-      case Methods.generateToken:
-        String accessToken = ConversationHandler.generateAccessToken(call.argument("accountSid"),call.argument("apiKey"),call.argument("apiSecret"),call.argument("identity"));
-//        System.out.println("accessToken generated->"+accessToken);
+      // Generate token and authenticate user #
+      case Methods.generateToken: //Generate token and authenticate user
+        String accessToken = ConversationHandler.generateAccessToken(call.argument("accountSid"),call.argument("apiKey"),call.argument("apiSecret"),call.argument("identity"),call.argument("serviceSid"));
+        System.out.println("accessToken generated->"+accessToken);
         ConversationHandler.init(accessToken,result);
         break;
 
+      // Create new conversation #
       case Methods.createConversation:
         ConversationHandler.createConversation(call.argument("conversationName"),call.argument("identity"),result);
         break;
 
+      // Get list of conversations for logged in user #
       case Methods.getConversations:
         List<Map<String, Object>> conversationList = ConversationHandler.getConversationsList();
         result.success(conversationList);
         break;
 
+      // Get messages from the specific conversation #
       case Methods.getMessages:
         ConversationHandler.getAllMessages(call.argument("conversationId"),result);
         break;
 
+      //Join the existing conversation #
       case Methods.joinConversation:
         String joinStatus =  ConversationHandler.joinConversation(call.argument("conversationId"));
         result.success(joinStatus);
         break;
 
+      // Send message #
       case Methods.sendMessage:
         ConversationHandler.sendMessages(call.argument("message"),call.argument("conversationId"), Boolean.TRUE.equals(call.argument("isFromChatGpt")),result);
         break;
 
+      // Add participant in a conversation #
       case Methods.addParticipant:
         ConversationHandler.addParticipant(call.argument("participantName"),call.argument("conversationId"),result);
         break;
 
+      // Get messages from the specific conversation #
       case Methods.receiveMessages:
         ConversationHandler.receiveMessages(call.argument("conversationId"));
         break;
 
+      // Get participants from the specific conversation #
       case Methods.getParticipants:
         ConversationHandler.getParticipants(call.argument("conversationId"),result);
         break;

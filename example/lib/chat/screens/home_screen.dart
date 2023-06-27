@@ -120,7 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         "apiKey": "SKf09f0de93c7a51e090f69df13a524ec5",
                         "apiSecret": "irAC6QfH9rsnnBC23ZDEcLGcUBb4mS5Z",
                         // "identity": "arati.pailwan@zingworks.in"
-                        "identity": _userNameController.text
+                        "identity": _userNameController.text,
+                        "serviceSid": "IS1b4142e65b0f482fb795e2c48d028f45"
                       }));
                     }else {
                       ToastUtility.showToastAtCenter("Please enter user name.");

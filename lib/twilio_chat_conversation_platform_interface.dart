@@ -25,7 +25,7 @@ abstract class TwilioChatConversationPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
-  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity}) {
+  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity, required String serviceSid}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
   Future<String?> createConversation({required String conversationName ,required String identity}) {

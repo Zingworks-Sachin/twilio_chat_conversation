@@ -15,12 +15,13 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
   }
 
   @override
-  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity}) async {
+  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity,required String serviceSid}) async {
     final accessToken = await methodChannel.invokeMethod<String>('generateToken',{
       "accountSid": accountSid,
       "apiKey": apiKey,
       "apiSecret": apiSecret,
-      "identity": identity
+      "identity": identity,
+      "serviceSid":serviceSid
     });
     return accessToken;
   }

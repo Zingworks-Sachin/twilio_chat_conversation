@@ -42,7 +42,7 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> generateToken(credentials) async {
     String response;
     try {
-      final String result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity']) ?? "UnImplemented Error";
+      final String result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'], serviceSid: credentials['serviceSid']) ?? "UnImplemented Error";
       // final String result = await platform.invokeMethod('generateToken', {
       //   "accountSid": credentials['accountSid'],
       //   "apiKey": credentials['apiKey'],
