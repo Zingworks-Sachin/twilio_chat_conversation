@@ -24,6 +24,7 @@ class ConversationHandler {
     protected static  ConversationsClient conversationClient;
     protected static FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
 
+    /// Generate token and authenticate user #
     protected static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity, String serviceSid) {
         // Create an AccessToken builder
         AccessToken.Builder builder = new AccessToken.Builder(accountSid, apiKey, apiSecret);
@@ -41,6 +42,8 @@ class ConversationHandler {
         AccessToken token = builder.build();
         return token.toJwt();
     }
+
+    /// Create new conversation #
     protected static void createConversation(String conversationName, String identity, MethodChannel.Result result) {
         conversationClient.createConversation(conversationName, new CallbackListener<Conversation>() {
 
@@ -59,6 +62,8 @@ class ConversationHandler {
             }
         });
     }
+
+    /// Add participant in a conversation #
     protected static void addParticipant(String participantName, String conversationId, MethodChannel.Result result){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
 
@@ -87,6 +92,8 @@ class ConversationHandler {
             }
         });
     }
+
+    ///Join the existing conversation #
     protected static String joinConversation(String conversationId){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
 
@@ -116,6 +123,8 @@ class ConversationHandler {
         });
         return conversationId;
     }
+
+    /// Send message #
     protected static void sendMessages(String enteredMessage, String conversationId, boolean isFromChatGpt, MethodChannel.Result result){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
 
@@ -149,6 +158,8 @@ class ConversationHandler {
             }
         });
     }
+
+    /// Get messages from the specific conversation #
     protected static void receiveMessages(String conversationId){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
 
@@ -205,6 +216,8 @@ class ConversationHandler {
             }
         });
     }
+
+    /// Get list of conversations for logged in user #
     protected static List<Map<String, Object>> getConversationsList(){
         List<Conversation> conversationList = conversationClient.getMyConversations();
         System.out.println(conversationList.size()+"");
@@ -218,6 +231,8 @@ class ConversationHandler {
         }
         return  list;
     }
+
+    /// Get messages from the specific conversation #
     protected static void getAllMessages(String conversationId, MethodChannel.Result result){
         List<Map<String, Object>> list = new ArrayList<>();
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
@@ -278,6 +293,8 @@ class ConversationHandler {
             }
         });
     }
+
+    /// Get participants from the specific conversation #
     protected static void getParticipants(String conversationId, MethodChannel.Result result) {
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
 

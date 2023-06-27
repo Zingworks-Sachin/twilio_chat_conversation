@@ -44,7 +44,6 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
 
     switch (call.method) {
-      // Generate token and authenticate user #
       case Methods.generateToken: //Generate token and authenticate user
         String accessToken = ConversationHandler.generateAccessToken(call.argument("accountSid"),call.argument("apiKey"),call.argument("apiSecret"),call.argument("identity"),call.argument("serviceSid"));
         System.out.println("accessToken generated->"+accessToken);

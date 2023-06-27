@@ -14,6 +14,7 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     return version;
   }
 
+  /// Generate token and authenticate user #
   @override
   Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity,required String serviceSid}) async {
     final accessToken = await methodChannel.invokeMethod<String>('generateToken',{
@@ -26,6 +27,7 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     return accessToken;
   }
 
+  /// Create new conversation #
   @override
   Future<String?> createConversation({required String conversationName,required String identity}) async {
     final result = await methodChannel.invokeMethod<String>('createConversation',{
@@ -35,12 +37,14 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     return result;
   }
 
+  /// Get list of conversations for logged in user #
   @override
   Future<List?> getConversations() async {
     final  List? conversationsList = await methodChannel.invokeMethod('getConversations');
     return conversationsList ?? [];
   }
 
+  /// Get messages from the specific conversation #
   @override
   Future<List?> getMessages({required String conversationId}) async {
     final  List? messages = await methodChannel.invokeMethod('getMessages',{
@@ -50,6 +54,7 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     return messages ?? [];
   }
 
+  /// Join the existing conversation #
   @override
   Future<String?> joinConversation({required String conversationId}) async {
     final String? result = await methodChannel.invokeMethod<String>('joinConversation',{
@@ -57,6 +62,8 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     });
     return  result ?? "";
   }
+
+  /// Send message #
   @override
   Future<String?> sendMessage({required String conversationId,required String message}) async {
     final String? result = await methodChannel.invokeMethod<String>('sendMessage',{
@@ -66,6 +73,7 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     return  result ?? "";
   }
 
+  /// Add participant in a conversation #
   @override
   Future<String?> addParticipant({required String conversationId,required String participantName}) async {
     final String? result = await methodChannel.invokeMethod<String>('addParticipant',{
@@ -75,6 +83,7 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     return  result ?? "";
   }
 
+  /// Get messages from the specific conversation #
   @override
   Future<String?> receiveMessages({required String conversationId}) async {
     final String? result = await methodChannel.invokeMethod<String>('receiveMessages',{
@@ -82,6 +91,8 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     });
     return  result ?? "";
   }
+
+  /// Get participants from the specific conversation #
   @override
   Future<List?> getParticipants({required String conversationId}) async {
     final  List? participantsList = await methodChannel.invokeMethod('getParticipants',{
