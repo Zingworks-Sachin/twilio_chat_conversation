@@ -1,11 +1,21 @@
 PODS:
+  - Alamofire (5.7.1)
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
   - Toast (4.0.0)
   - twilio_chat_conversation (0.0.1):
+    - Alamofire (~> 5.0)
     - Flutter
+    - TwilioConversationsClient (~> 4.0)
+  - TwilioCommonLib (2.0.2)
+  - TwilioConversationsClient (4.0.1):
+    - TwilioTwilsockLib (= 2.0.2)
+  - TwilioStateMachine (2.0.2)
+  - TwilioTwilsockLib (2.0.2):
+    - TwilioCommonLib (= 2.0.2)
+    - TwilioStateMachine (= 2.0.2)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -14,7 +24,12 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - Toast
+    - TwilioCommonLib
+    - TwilioConversationsClient
+    - TwilioStateMachine
+    - TwilioTwilsockLib
 
 EXTERNAL SOURCES:
   Flutter:
@@ -25,10 +40,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/twilio_chat_conversation/ios"
 
 SPEC CHECKSUMS:
+  Alamofire: 0123a34370cb170936ae79a8df46cc62b2edeb88
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  twilio_chat_conversation: ec70579868a75a5189976e4bac3e8f3b53ffa1c7
+  twilio_chat_conversation: 00e58208a528878b5759fba0f872cb7802ece184
+  TwilioCommonLib: cd0b6ced22d1a9a6fc9df813bd03aff113ceb91c
+  TwilioConversationsClient: 418e804e9ecc5d2e17a96522191e5f5709155711
+  TwilioStateMachine: 83d99bcb38d6133dd4f01f87464bd297f9f6c41b
+  TwilioTwilsockLib: 2ac549121dddaafdd24e36f3a44b2b14eff7f540
 
 PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 
