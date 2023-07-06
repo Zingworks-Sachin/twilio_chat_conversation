@@ -2,15 +2,10 @@ import UIKit
 import TwilioConversationsClient
 
 class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
-
-    // the unique name of the conversation you create
-    private let uniqueConversationName = "general"
+    let eventManager = EventManager()
 
     // MARK: Conversations variables
     private var client: TwilioConversationsClient?
-    private var conversation: TCHConversation?
-    private(set) var messages: [TCHMessage] = []
-    private var identity: String?
     
 //    func conversationsClient(_ client: TwilioConversationsClient, synchronizationStatusUpdated status: TCHClientSynchronizationStatus) {
 //        guard status == .completed else {
@@ -34,7 +29,12 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     // Called whenever a conversation we've joined receives a new message
     func conversationsClient(_ client: TwilioConversationsClient, conversation: TCHConversation,
                     messageAdded message: TCHMessage) {
-        messages.append(message)
+        
+        print("author->"+(message.author ?? "")+"---Message->"+(message.body ?? ""))
+        // Register for the event notification
+        // Post the event notification
+        NotificationCenter.default.post(name: .myEvent, object: nil) // Output: "Event occurred"
+        //        messages.append(message)
 
         // Changes to the delegate should occur on the UI thread
 //        DispatchQueue.main.async {
@@ -76,14 +76,13 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
 //        }
     }
 
-    func sendMessage(_ messageText: String,
+    func sendMessage(conversationId:String, messageText: String,
                      completion: @escaping (TCHResult, TCHMessage?) -> Void) {
-        
-//        let messageOptions = TCHMessageOptions().withBody(messageText)
-//        conversation?.sendMessage(with: messageOptions, completion: { (result, message) in
-//            completion(result, message)
-//        })
-    
+            self.getConversationFromId(conversationId: conversationId) { conversation in
+            conversation?.prepareMessage().setBody(messageText).buildAndSend(completion: { tchResult, tchMessages in
+                completion(tchResult,tchMessages)
+            })
+        }
     }
 
     func loginFromServer(_ identity: String, completion: @escaping (Bool) -> Void) {
@@ -180,7 +179,6 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     }
 
     func joinConversation(_ conversation: TCHConversation,_ completion: @escaping(String?) -> Void) {
-        self.conversation = conversation
         if conversation.status == .joined {
             print("Current user already exists in conversation")
             self.loadPreviousMessages(conversation) { listOfMessages in
@@ -212,24 +210,40 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     
     func loadPreviousMessages(_ conversation: TCHConversation,_ completion: @escaping([[String: Any]]?) -> Void) {
         var listOfMessagess: [[String: Any]] = []
-        conversation.getLastMessages(withCount: 100) { (result, messages) in
+        conversation.getLastMessages(withCount: 1000) { (result, messages) in
             if let messagesList = messages {
                 messagesList.forEach { message in
-                    
                     var dictionary: [String: Any] = [:]
+                    var attachedMedia: [[String: Any]] = []
                     
-                    print("type->\(type(of: messages))---author->\(String(describing: message.author))---messages->\(String(describing: message.body))" )
-                    
+                    message.attachedMedia.forEach { media in
+                        var mediaDictionary: [String: Any] = [:]
+                        mediaDictionary["filename"] = media.filename ?? ""
+                        mediaDictionary["contentType"] = media.contentType
+                        mediaDictionary["sid"] = media.sid
+                        mediaDictionary["description"] = media.description
+                        mediaDictionary["size"] = media.size
+                        attachedMedia.append(mediaDictionary)
+                    }
 
                     dictionary["sid"] = message.participantSid
                     dictionary["author"] = message.author
                     dictionary["body"] = message.body
-//                    dictionary["attributes"] = message.attributes()
+                    dictionary["attributes"] = message.attributes()?.string
                     dictionary["dateCreated"] = message.dateCreated
+                    dictionary["participant"] = message.participant?.identity
+                    dictionary["participantSid"] = message.participantSid
+                    dictionary["description"] = message.description
+                    dictionary["index"] = message.index
+                    dictionary["attachedMedia"] = attachedMedia
                     listOfMessagess.append(dictionary)
                 }
                 completion(listOfMessagess)
             }
         }
     }
+}
+
+extension Notification.Name {
+    static let myEvent = Notification.Name("MyEvent")
 }

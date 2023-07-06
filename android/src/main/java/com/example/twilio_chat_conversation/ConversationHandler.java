@@ -227,9 +227,22 @@ class ConversationHandler {
             Map<String, Object> conversationMap = new HashMap<>();
             conversationMap.put("sid",conversationList.get(i).getSid());
             conversationMap.put("conversationName",conversationList.get(i).getFriendlyName());
-            list.add(conversationMap);
+            conversationMap.put("createdBy",conversationList.get(i).getCreatedBy());
+            conversationMap.put("dateCreated",conversationList.get(i).getDateCreated());
+            conversationMap.put("lastMessageDate",conversationList.get(i).getLastMessageDate().toString());
+            conversationMap.put("uniqueName",conversationList.get(i).getUniqueName());
+            conversationMap.put("uniqueName",conversationList.get(i).getUnreadMessagesCount(longCallbackListener());
+
+            if (conversationList.get(i).getFriendlyName() != null && !conversationList.get(i).getFriendlyName().trim().isEmpty()) {
+                list.add(conversationMap);
+            }
         }
         return  list;
+    }
+
+    private static CallbackListener<Long> longCallbackListener() {
+        System.out.println("messagesMap-"+Long.numberOfLeadingZeros);
+        return count;
     }
 
     /// Get messages from the specific conversation #
@@ -239,7 +252,7 @@ class ConversationHandler {
 
             @Override
             public void onSuccess(Conversation conversation) {
-                conversation.getLastMessages(100, new CallbackListener<List<Message>>() {
+                conversation.getLastMessages(1000, new CallbackListener<List<Message>>() {
 
                     @Override
                     public void onSuccess(List<Message> messagesList) {
