@@ -2,7 +2,6 @@ import UIKit
 import TwilioConversationsClient
 
 class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
-    let eventManager = EventManager()
 
     // MARK: Conversations variables
     private var client: TwilioConversationsClient?
@@ -31,18 +30,11 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
                     messageAdded message: TCHMessage) {
         
         print("author->"+(message.author ?? "")+"---Message->"+(message.body ?? ""))
-        // Register for the event notification
-        // Post the event notification
-        NotificationCenter.default.post(name: .myEvent, object: nil) // Output: "Event occurred"
-        //        messages.append(message)
-
-        // Changes to the delegate should occur on the UI thread
-//        DispatchQueue.main.async {
-//            if let delegate = self.delegate {
-//                delegate.reloadMessages()
-//                delegate.receivedNewMessage()
-//            }
-//        }
+        self.getMessageInDictionary(message) { messageDictionary in
+            if let messageDict = messageDictionary {
+                NotificationCenter.default.post(name: .myEvent, object: messageDict) // Output: "Event occurred"
+            }
+        }
     }
     
     func conversationsClientTokenWillExpire(_ client: TwilioConversationsClient) {
@@ -213,34 +205,42 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
         conversation.getLastMessages(withCount: 1000) { (result, messages) in
             if let messagesList = messages {
                 messagesList.forEach { message in
-                    var dictionary: [String: Any] = [:]
-                    var attachedMedia: [[String: Any]] = []
-                    
-                    message.attachedMedia.forEach { media in
-                        var mediaDictionary: [String: Any] = [:]
-                        mediaDictionary["filename"] = media.filename ?? ""
-                        mediaDictionary["contentType"] = media.contentType
-                        mediaDictionary["sid"] = media.sid
-                        mediaDictionary["description"] = media.description
-                        mediaDictionary["size"] = media.size
-                        attachedMedia.append(mediaDictionary)
+                    self.getMessageInDictionary(message) { messageDictionary in
+                        if let messageDict = messageDictionary {
+                            listOfMessagess.append(messageDict)
+                        }
                     }
-
-                    dictionary["sid"] = message.participantSid
-                    dictionary["author"] = message.author
-                    dictionary["body"] = message.body
-                    dictionary["attributes"] = message.attributes()?.string
-                    dictionary["dateCreated"] = message.dateCreated
-                    dictionary["participant"] = message.participant?.identity
-                    dictionary["participantSid"] = message.participantSid
-                    dictionary["description"] = message.description
-                    dictionary["index"] = message.index
-                    dictionary["attachedMedia"] = attachedMedia
-                    listOfMessagess.append(dictionary)
                 }
                 completion(listOfMessagess)
             }
         }
+    }
+    
+    func getMessageInDictionary(_ message:TCHMessage,_ completion: @escaping([String: Any]?) -> Void) {
+        var dictionary: [String: Any] = [:]
+        var attachedMedia: [[String: Any]] = []
+        
+        message.attachedMedia.forEach { media in
+            var mediaDictionary: [String: Any] = [:]
+            mediaDictionary["filename"] = media.filename ?? ""
+            mediaDictionary["contentType"] = media.contentType
+            mediaDictionary["sid"] = media.sid
+            mediaDictionary["description"] = media.description
+            mediaDictionary["size"] = media.size
+            attachedMedia.append(mediaDictionary)
+        }
+
+        dictionary["sid"] = message.participantSid
+        dictionary["author"] = message.author
+        dictionary["body"] = message.body
+        dictionary["attributes"] = message.attributes()?.string
+        dictionary["dateCreated"] = message.dateCreated
+        dictionary["participant"] = message.participant?.identity
+        dictionary["participantSid"] = message.participantSid
+        dictionary["description"] = message.description
+        dictionary["index"] = message.index
+        dictionary["attachedMedia"] = attachedMedia
+        completion(dictionary)
     }
 }
 

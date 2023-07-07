@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:twilio_chat_conversation/twilio_chat_conversation.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
@@ -37,6 +38,14 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
 
   List allMessageList = [];
   final ScrollController _controller = ScrollController(initialScrollOffset: 0);
+  final twilio = TwilioChatConversation();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    twilio.unregister();
+  }
 
   @override
   void initState() {
@@ -44,8 +53,16 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     chatBloc = BlocProvider.of<ChatBloc>(context);
     chatBloc!
         .add(ReceiveMessageEvent(conversationName: widget.conversationSid));
-    // print("identity");
-    //print(widget.identity);
+    twilio.register();
+    twilio.onMessageReceived.listen((event) {
+      print("messageUpdated->"+event["author"].toString());
+      setState(() {
+        allMessageList.add(event);
+        allMessageList
+            .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
+      });
+    });
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _controller.animateTo(
         0.0,
@@ -61,7 +78,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     final chatProvider = Provider.of<ChatProvider>(context);
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Conversation Details"),
+          title:  Text(widget.conversationName),
           backgroundColor: Colors.black,
         ),
         backgroundColor: Colors.black,
@@ -124,9 +141,16 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
           );
         }, listener: (BuildContext context, ChatStates state) {
           if (state is ReceiveMessageLoadedState) {
-            allMessageList = state.messagesList;
+            setState(() {
+            print("ReceiveMessageLoadedState called");
+            
+            allMessageList.addAll(state.messagesList);
             allMessageList
                 .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
+
+
+            });
+            print("allMessageList called->"+allMessageList.toString());
 
             /// sort List<Map<String,dynamic>>
           }

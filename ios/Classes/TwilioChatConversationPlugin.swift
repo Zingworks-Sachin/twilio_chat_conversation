@@ -2,15 +2,36 @@ import Flutter
 import UIKit
 import Foundation
 
-public class TwilioChatConversationPlugin: NSObject, FlutterPlugin {
+public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStreamHandler {
+   
+    
     var conversationsHandler = ConversationsHandler()
+    var eventSink: FlutterEventSink?
 
+    
+    public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        self.eventSink = events
+        NotificationCenter.default.addObserver(forName: .myEvent, object: nil, queue: nil) { message in
+            print("Event occurred->\(String(describing: message.object))")
+            self.eventSink?(message.object)
+        }
+        return nil
+    }
+    
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        self.eventSink = nil
+        NotificationCenter.default.removeObserver(self, name: .myEvent, object: nil)
+        return nil
+    }
+    
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "twilio_chat_conversation", binaryMessenger: registrar.messenger())
-//      let channel = FlutterMethodChannel(name: "twilio_chat_conversation", binaryMessenger: registrar.messenger())
-
+    let eventChannel = FlutterEventChannel(name: "twilio_chat_conversation/onMessageUpdated", binaryMessenger: registrar.messenger())
+      
     let instance = TwilioChatConversationPlugin()
+      
     registrar.addMethodCallDelegate(instance, channel: channel)
+    eventChannel.setStreamHandler(instance)
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -117,6 +138,7 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin {
                   }
               }
           }
+          
           break
           
       case Methods.sendMessage:
@@ -136,11 +158,3 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin {
   }
 }
 
-class EventManager {
-    var eventHandler: (() -> Void)?
-    
-    func fireEvent() {
-        // Trigger the event
-        eventHandler?()
-    }
-}

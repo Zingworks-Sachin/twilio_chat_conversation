@@ -65,7 +65,8 @@ class JoinConversionLoadingState extends ChatStates {
 // JoinConversionLoadedState
 class JoinConversionLoadedState extends ChatStates {
   final String result;
-  JoinConversionLoadedState({required this.result});
+  final String conversationName;
+  JoinConversionLoadedState({required this.result,required this.conversationName});
 
   @override
   List<Object?> get props => throw UnimplementedError();

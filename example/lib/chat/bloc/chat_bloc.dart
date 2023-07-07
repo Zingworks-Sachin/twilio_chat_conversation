@@ -45,8 +45,8 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
       emit(JoinConversionLoadingState());
       try {
         String result =
-            await chatRepository.joinConversation(event.conversationName);
-        emit(JoinConversionLoadedState(result: result));
+            await chatRepository.joinConversation(event.conversationId);
+        emit(JoinConversionLoadedState(result: result, conversationName: event.conversationName));
       } catch (e) {
         emit(JoinConversionErrorState(message: e.toString()));
       }

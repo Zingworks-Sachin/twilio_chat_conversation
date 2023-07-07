@@ -105,8 +105,9 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                               IconButton(
                                   onPressed: () {
                                     chatBloc!.add(JoinConversionEvent(
-                                        conversationName: widget
-                                            .conversationList[index]["sid"]));
+                                        conversationId: widget
+                                            .conversationList[index]["sid"], conversationName: widget
+                                        .conversationList[index]["conversationName"]));
                                   },
                                   icon: const Icon(Icons.chat,color: Colors.greenAccent,)),
                               IconButton(
@@ -138,7 +139,7 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                     create: (context) =>
                         ChatBloc(chatRepository: ChatRepositoryImpl()),
                     child: ChatDetailsScreen(
-                      conversationName: state.result,
+                      conversationName: state.conversationName,
                       conversationSid: state.result,
                       identity: widget.identity,
                     )),

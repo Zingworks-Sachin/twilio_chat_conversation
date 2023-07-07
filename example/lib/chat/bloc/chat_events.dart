@@ -25,8 +25,9 @@ class CreateConversionEvent extends ChatEvents {
 
 // JoinConversion
 class JoinConversionEvent extends ChatEvents {
+  final String conversationId;
   final String conversationName;
-  JoinConversionEvent({required this.conversationName});
+  JoinConversionEvent({required this.conversationId,required this.conversationName});
 
   @override
   List<Object?> get props => throw UnimplementedError();

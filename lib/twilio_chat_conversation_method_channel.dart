@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'twilio_chat_conversation_platform_interface.dart';
@@ -7,6 +9,14 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('twilio_chat_conversation');
+
+  final EventChannel _eventChannel = const EventChannel('twilio_chat_conversation/event_channel');
+
+// Define a stream controller for event channel events
+  final StreamController<dynamic> _eventStreamController = StreamController<dynamic>.broadcast();
+
+// Expose the event stream to the Flutter app
+  Stream<dynamic> get eventStream => _eventStreamController.stream;
 
   @override
   Future<String?> getPlatformVersion() async {
@@ -99,6 +109,29 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
       "conversationId":conversationId
     });
     return participantsList ?? [];
+  }
+
+  // @override
+  // Future<Stream> onMessageUpdated({required Map message}) async {
+  //   // Set up the event channel listener
+  //   _eventChannel.receiveBroadcastStream().listen((event) {
+  //     // Add the received event to the stream controller
+  //     print("onMessageUpdated->${event.toString()}");
+  //     print("onMessageUpdated message->${event.toString()}");
+  //     _eventStreamController.add(event);
+  //   });
+  //   return eventStream;
+  // }
+
+
+@override
+  Future<Map> onMessageUpdated({required Map message}) async {
+    // TODO: implement onMessageUpdated
+  //
+  // final  List? participantsList = await methodChannel.invokeMethod('onMessageUpdated',{
+  //   "conversationId":conversationId
+  // });
+     return message;
   }
 
 }
