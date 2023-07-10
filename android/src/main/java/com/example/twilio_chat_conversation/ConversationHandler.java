@@ -229,21 +229,21 @@ class ConversationHandler {
             conversationMap.put("conversationName",conversationList.get(i).getFriendlyName());
             conversationMap.put("createdBy",conversationList.get(i).getCreatedBy());
             conversationMap.put("dateCreated",conversationList.get(i).getDateCreated());
-            conversationMap.put("lastMessageDate",conversationList.get(i).getLastMessageDate().toString());
+//            conversationMap.put("lastMessageDate",conversationList.get(i).getLastMessageDate().toString());
             conversationMap.put("uniqueName",conversationList.get(i).getUniqueName());
-            conversationMap.put("uniqueName",conversationList.get(i).getUnreadMessagesCount(longCallbackListener());
 
             if (conversationList.get(i).getFriendlyName() != null && !conversationList.get(i).getFriendlyName().trim().isEmpty()) {
                 list.add(conversationMap);
             }
         }
+        System.out.println("list"+list);
         return  list;
     }
 
-    private static CallbackListener<Long> longCallbackListener() {
-        System.out.println("messagesMap-"+Long.numberOfLeadingZeros);
-        return count;
-    }
+//    private static CallbackListener<Long> longCallbackListener() {
+//        System.out.println("messagesMap-"+Long.numberOfLeadingZeros.to);
+//        return count;
+//    }
 
     /// Get messages from the specific conversation #
     protected static void getAllMessages(String conversationId, MethodChannel.Result result){
