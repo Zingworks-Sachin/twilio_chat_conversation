@@ -5,7 +5,8 @@ import 'twilio_chat_conversation_platform_interface.dart';
 class TwilioChatConversation {
 
   static const EventChannel _eventChannel = EventChannel('twilio_chat_conversation/onMessageUpdated');
-  static StreamController<Map> _messageUpdateController = StreamController<Map>();
+  static final StreamController<Map> _messageUpdateController = StreamController<Map>.broadcast();
+
   Stream<Map> get onMessageReceived => _messageUpdateController.stream;
 
   Future<String?> getPlatformVersion() {
@@ -48,14 +49,16 @@ class TwilioChatConversation {
     return TwilioChatConversationPlatform.instance.getParticipants(conversationId: conversationId);
   }
 
-   void register() {
-    _eventChannel.receiveBroadcastStream().listen((dynamic batteryLevel) {
-      _messageUpdateController.add(batteryLevel);
-    });
+  void subscribeToMessageUpdate({required String conversationSid}) async  {
+     TwilioChatConversationPlatform.instance.subscribeToMessageUpdate(conversationId: conversationSid);
+     _eventChannel.receiveBroadcastStream(conversationSid).listen((dynamic batteryLevel) {
+       _messageUpdateController.add(batteryLevel);
+     });
   }
 
-   void unregister() {
-    _messageUpdateController.close();
-    _messageUpdateController = StreamController<Map>();
-   }
+  void unSubscribeToMessageUpdate({required String conversationSid}) {
+     TwilioChatConversationPlatform.instance.unSubscribeToMessageUpdate(conversationId: conversationSid);
+     // _messageUpdateController.close();
+     // _messageUpdateController = StreamController<Map>();
+  }
 }

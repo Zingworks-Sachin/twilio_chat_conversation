@@ -2,25 +2,40 @@ import Flutter
 import UIKit
 import Foundation
 
-public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStreamHandler {
-   
+
+protocol MessageDelegate: AnyObject {
+    func messageUpdated( message: [String:Any],  messageSubscriptionId : String)
+}
+
+public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStreamHandler,MessageDelegate {
+    func messageUpdated(message: [String : Any], messageSubscriptionId: String) {
+        print("messageUpdated called")
+        
+        if let conversationId = message["conversationId"] as? String {
+            print("messageSubscriptionId->\(messageSubscriptionId == conversationId)")
+            if (messageSubscriptionId == conversationId) {
+                if let message = message["message"] as? [String:Any] {
+                    self.eventSink?(message)
+                }
+            }
+        }
+    }
     
     var conversationsHandler = ConversationsHandler()
     var eventSink: FlutterEventSink?
+    var listOfMessageIds: [String] = []
+
 
     
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events
-        NotificationCenter.default.addObserver(forName: .myEvent, object: nil, queue: nil) { message in
-            print("Event occurred->\(String(describing: message.object))")
-            self.eventSink?(message.object)
-        }
+        print("Event occurred->\(String(describing: arguments))")
         return nil
     }
     
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        print("onCancel called->\(arguments ?? "")")
         self.eventSink = nil
-        NotificationCenter.default.removeObserver(self, name: .myEvent, object: nil)
         return nil
     }
     
@@ -138,7 +153,6 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
                   }
               }
           }
-          
           break
           
       case Methods.sendMessage:
@@ -150,7 +164,18 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
               }
           }
           break
+      case Methods.subscribeToMessageUpdate:
+          if let conversationId = arguments?["conversationId"] as? String {
+              print("subscribeToMessageUpdate->\(conversationId)")
+              conversationsHandler.messageDelegate = self
+              conversationsHandler.messageSubscriptionId = conversationId
+          }
+          break
           
+      case Methods.unSubscribeToMessageUpdate:
+          print("unSubscribeToMessageUpdate")
+          conversationsHandler.messageDelegate = nil
+          break
       default:
           break
           

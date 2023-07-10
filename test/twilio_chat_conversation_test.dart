@@ -64,6 +64,20 @@ class MockTwilioChatConversationPlatform
     // TODO: implement getParticipants
     throw UnimplementedError();
   }
+
+  @override
+  Future<String?> subscribeToMessageUpdate({required String conversationId}) {
+    // TODO: implement subscribeToMessageUpdate
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> unSubscribeToMessageUpdate({required String conversationId}) {
+    // TODO: implement unSubscribeToMessageUpdate
+    throw UnimplementedError();
+  }
+
+
 }
 
 void main() {

@@ -43,8 +43,8 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
+    twilio.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
     super.dispose();
-    twilio.unregister();
   }
 
   @override
@@ -53,14 +53,18 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     chatBloc = BlocProvider.of<ChatBloc>(context);
     chatBloc!
         .add(ReceiveMessageEvent(conversationName: widget.conversationSid));
-    twilio.register();
+
+    twilio.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
+
     twilio.onMessageReceived.listen((event) {
       print("messageUpdated->"+event["author"].toString());
-      setState(() {
-        allMessageList.add(event);
-        allMessageList
-            .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
-      });
+      if (mounted){
+        setState(() {
+          allMessageList.add(event);
+          allMessageList
+              .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
+        });
+      }
     });
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -150,7 +154,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
 
 
             });
-            print("allMessageList called->"+allMessageList.toString());
+            // print("allMessageList called->"+allMessageList.toString());
 
             /// sort List<Map<String,dynamic>>
           }

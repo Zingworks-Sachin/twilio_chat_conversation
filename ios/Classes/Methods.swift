@@ -19,4 +19,8 @@ class Methods {
     static let addParticipant: String = "addParticipant"
     static let receiveMessages: String = "receiveMessages"
     static let getParticipants: String = "getParticipants"
+    
+    static let unSubscribeToMessageUpdate: String = "unSubscribeToMessageUpdate"
+    static let subscribeToMessageUpdate: String = "subscribeToMessageUpdate"
+
 }

@@ -10,8 +10,6 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
   @visibleForTesting
   final methodChannel = const MethodChannel('twilio_chat_conversation');
 
-  final EventChannel _eventChannel = const EventChannel('twilio_chat_conversation/event_channel');
-
 // Define a stream controller for event channel events
   final StreamController<dynamic> _eventStreamController = StreamController<dynamic>.broadcast();
 
@@ -24,7 +22,7 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     return version;
   }
 
-  /// Generate token and authenticate user #
+  /// Generate token and authenticate user (only for Android) #
   @override
   Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity,required String serviceSid}) async {
     final accessToken = await methodChannel.invokeMethod<String>('generateToken',{
@@ -125,13 +123,22 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
 
 
 @override
-  Future<Map> onMessageUpdated({required Map message}) async {
+  Future<String> subscribeToMessageUpdate({required String conversationId}) async {
     // TODO: implement onMessageUpdated
   //
-  // final  List? participantsList = await methodChannel.invokeMethod('onMessageUpdated',{
-  //   "conversationId":conversationId
-  // });
-     return message;
+  final  String? result = await methodChannel.invokeMethod('subscribeToMessageUpdate',{
+    "conversationId":conversationId
+  });
+     return result ?? "";
   }
 
+  @override
+  Future<String> unSubscribeToMessageUpdate({required String conversationId}) async {
+    // TODO: implement onMessageUpdated
+    //
+    final  String? result = await methodChannel.invokeMethod('unSubscribeToMessageUpdate',{
+      "conversationId":conversationId
+    });
+    return result ?? "";
+  }
 }

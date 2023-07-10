@@ -5,7 +5,9 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
 
     // MARK: Conversations variables
     private var client: TwilioConversationsClient?
-    
+    weak var messageDelegate: MessageDelegate?
+    public var messageSubscriptionId: String = ""
+
 //    func conversationsClient(_ client: TwilioConversationsClient, synchronizationStatusUpdated status: TCHClientSynchronizationStatus) {
 //        guard status == .completed else {
 //            return
@@ -29,10 +31,13 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     func conversationsClient(_ client: TwilioConversationsClient, conversation: TCHConversation,
                     messageAdded message: TCHMessage) {
         
-        print("author->"+(message.author ?? "")+"---Message->"+(message.body ?? ""))
+        print("author->"+(message.author ?? "")+"----conversation->\(String(describing: conversation.sid))")
         self.getMessageInDictionary(message) { messageDictionary in
             if let messageDict = messageDictionary {
-                NotificationCenter.default.post(name: .myEvent, object: messageDict) // Output: "Event occurred"
+                var updatedMessage: [String: Any] = [:]
+                updatedMessage["conversationId"] = conversation.sid ?? ""
+                updatedMessage["message"] = messageDict
+                self.messageDelegate?.messageUpdated(message: updatedMessage, messageSubscriptionId: self.messageSubscriptionId)
             }
         }
     }
@@ -242,8 +247,4 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
         dictionary["attachedMedia"] = attachedMedia
         completion(dictionary)
     }
-}
-
-extension Notification.Name {
-    static let myEvent = Notification.Name("MyEvent")
 }
