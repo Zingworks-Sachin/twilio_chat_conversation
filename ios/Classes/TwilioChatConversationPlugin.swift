@@ -2,30 +2,10 @@ import Flutter
 import UIKit
 import Foundation
 
-
-protocol MessageDelegate: AnyObject {
-    func messageUpdated( message: [String:Any],  messageSubscriptionId : String)
-}
-
-public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStreamHandler,MessageDelegate {
-    func messageUpdated(message: [String : Any], messageSubscriptionId: String) {
-        print("messageUpdated called")
-        
-        if let conversationId = message["conversationId"] as? String {
-            print("messageSubscriptionId->\(messageSubscriptionId == conversationId)")
-            if (messageSubscriptionId == conversationId) {
-                if let message = message["message"] as? [String:Any] {
-                    self.eventSink?(message)
-                }
-            }
-        }
-    }
+public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStreamHandler {
     
     var conversationsHandler = ConversationsHandler()
     var eventSink: FlutterEventSink?
-    var listOfMessageIds: [String] = []
-
-
     
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events
@@ -183,3 +163,12 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
   }
 }
 
+extension TwilioChatConversationPlugin : MessageDelegate {
+    func messageUpdated(message: [String : Any], messageSubscriptionId: String) {
+        if let conversationId = message["conversationId"] as? String,let message = message["message"] as? [String:Any] {
+            if (messageSubscriptionId == conversationId) {
+                self.eventSink?(message)
+            }
+        }
+    }
+}

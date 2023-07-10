@@ -30,9 +30,7 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     // Called whenever a conversation we've joined receives a new message
     func conversationsClient(_ client: TwilioConversationsClient, conversation: TCHConversation,
                     messageAdded message: TCHMessage) {
-        
-        print("author->"+(message.author ?? "")+"----conversation->\(String(describing: conversation.sid))")
-        self.getMessageInDictionary(message) { messageDictionary in
+                self.getMessageInDictionary(message) { messageDictionary in
             if let messageDict = messageDictionary {
                 var updatedMessage: [String: Any] = [:]
                 updatedMessage["conversationId"] = conversation.sid ?? ""
@@ -81,27 +79,6 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
             })
         }
     }
-
-    func loginFromServer(_ identity: String, completion: @escaping (Bool) -> Void) {
-        // Fetch Access Token from the server and initialize the Conversations Client
-//        let urlString = "\(TOKEN_URL)?identity=\(identity)"
-//        self.identity = identity
-//
-//        TokenUtils.retrieveToken(url: urlString) { (token, _, error) in
-//            guard let token = token else {
-//                print("Error retrieving token: \(error.debugDescription)")
-//                completion(false)
-//                return
-//            }
-//            // Set up Twilio Conversations client
-//            TwilioConversationsClient.conversationsClient(withToken: token,
-//                                                          properties: nil,
-//                                                          delegate: self) { (result, client) in
-//                                                            self.client = client
-//                                                            completion(result.isSuccessful)
-//            }
-//        }
-    }
     
     func loginWithAccessToken(_ token: String, completion: @escaping (TCHResult?) -> Void) {
         // Set up Twilio Conversations client
@@ -141,25 +118,10 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
 
     func getConversations(_ completion: @escaping([TCHConversation]) -> Void) {
         guard let client = client else {
-            print("else called")
             return
         }
         completion(client.myConversations() ?? [])
     }
-    
-//    func checkConversationCreation(uniqueConversationName:String,_ completion: @escaping(TCHResult?, TCHConversation?) -> Void) {
-//
-//        guard let client = client else {
-//            print("else called")
-//            return
-//        }
-//
-//        client.conversation(withSidOrUniqueName: uniqueConversationName) { (result, conversation) in
-//            completion(result, conversation)
-//        }
-//        let myConversations = client.myConversations()
-//        completion(TCHResult(), client.myConversations()?.first)
-//    }
     
     func getParticipants(conversationId:String,_ completion: @escaping([TCHParticipant]) -> Void) {
         self.getConversationFromId(conversationId: conversationId) { conversation in
@@ -177,13 +139,11 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
 
     func joinConversation(_ conversation: TCHConversation,_ completion: @escaping(String?) -> Void) {
         if conversation.status == .joined {
-            print("Current user already exists in conversation")
             self.loadPreviousMessages(conversation) { listOfMessages in
                 
             }
         } else {
             conversation.join(completion: { result in
-                print("Result of conversation join: \(result.resultText ?? "No Result")")
                 if result.isSuccessful {
                     self.loadPreviousMessages(conversation) { listOfMessages in
                         

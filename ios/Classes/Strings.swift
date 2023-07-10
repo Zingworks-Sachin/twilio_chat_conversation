@@ -1,10 +1,3 @@
-//
-//  Strings.swift
-//  twilio_chat_conversation
-//
-//  Created by Zingworks-MBP-1 on 28/06/23.
-//
-
 import Foundation
 
 class Strings {

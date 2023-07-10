@@ -29,13 +29,9 @@ class ChatDetailsScreen extends StatefulWidget {
 
 class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   ChatBloc? chatBloc;
-
   final msgController = TextEditingController();
-
   bool? isFromChatGpt = false;
-
   String typeMessages = "";
-
   List allMessageList = [];
   final ScrollController _controller = ScrollController(initialScrollOffset: 0);
   final twilio = TwilioChatConversation();
@@ -43,30 +39,19 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
-    twilio.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
+    unSubscribeToMessageUpdate();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    initializeDate();
+    subscribeToMessageUpdate();
+  }
+  void initializeDate() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
-    chatBloc!
-        .add(ReceiveMessageEvent(conversationName: widget.conversationSid));
-
-    twilio.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
-
-    twilio.onMessageReceived.listen((event) {
-      print("messageUpdated->"+event["author"].toString());
-      if (mounted){
-        setState(() {
-          allMessageList.add(event);
-          allMessageList
-              .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
-        });
-      }
-    });
-
+    chatBloc!.add(ReceiveMessageEvent(conversationName: widget.conversationSid));
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _controller.animateTo(
         0.0,
@@ -75,7 +60,22 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
       );
     });
   }
+  void unSubscribeToMessageUpdate() {
+    twilio.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
 
+  }
+  void subscribeToMessageUpdate() {
+    twilio.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
+    twilio.onMessageReceived.listen((event) {
+      if (mounted){
+        setState(() {
+          allMessageList.add(event);
+          allMessageList
+              .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
+        });
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
@@ -103,8 +103,6 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                     physics: const ClampingScrollPhysics(),
                     itemBuilder: (context, index) {
                       final message = allMessageList[index];
-                      // print(message['attributes']);
-                      // print(message['author']);
                       var isMe = (message['author'] == widget.identity &&
                               message['attributes'] != "true")
                           ? true
@@ -120,7 +118,6 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                     msgController: msgController,
                     haveValidation: true,
                     onSend: (typeMessage) {
-                      //print("typeMessage-" + typeMessage.toString());
                       List<String>? substrings = typeMessage.split(",");
                       if (substrings[0].contains("ChatGPT")) {
                         chatBloc!.add(SendMessageEvent(
@@ -145,34 +142,20 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
           );
         }, listener: (BuildContext context, ChatStates state) {
           if (state is ReceiveMessageLoadedState) {
-            setState(() {
-            print("ReceiveMessageLoadedState called");
-            
-            allMessageList.addAll(state.messagesList);
-            allMessageList
-                .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
-
-
-            });
-            // print("allMessageList called->"+allMessageList.toString());
-
-            /// sort List<Map<String,dynamic>>
-          }
-          if (state is SendMessageToChatGptLoadingState) {
-            // ProgressBar.show(context);
+            if (mounted){
+              setState(() {
+                allMessageList.addAll(state.messagesList);
+                allMessageList
+                    .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
+              });
+            }
           }
           if (state is SendMessageLoadedState) {
             msgController.text = "";
             chatBloc!.add(
                 ReceiveMessageEvent(conversationName: widget.conversationSid));
           }
-          if (state is ReceiveMessageLoadedState) {
-            // ProgressBar.dismiss(context);
-          }
           if (state is SendMessageToChatGptLoadedState) {
-            //ProgressBar.dismiss(context);
-            //print("state.chatGptListList[0].msg");
-            // print(state.chatGptListList[0].msg);
             chatBloc!.add(SendMessageEvent(
                 enteredMessage: state.chatGptListList[0].msg,
                 conversationName: widget.conversationSid,
