@@ -8,6 +8,7 @@ class Strings {
     /// Used when there is an error while creating a conversation
     static let createConversationFailure: String = "Error while creating conversation."
     
+    /// Used when conversation with provided name already exists
     static let conversationExists: String = "Conversation with provided name already exists"
     
     /// Used when participant is added to a conversation successfully

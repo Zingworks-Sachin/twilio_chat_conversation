@@ -18,11 +18,13 @@ import java.util.List;
 import java.util.Map;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.EventChannel.EventSink;
 
 class ConversationHandler {
     /// Entry point for the Conversations SDK.
     protected static  ConversationsClient conversationClient;
     protected static FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
+    private static MessageDelegate listener;
 
     /// Generate token and authenticate user #
     protected static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity, String serviceSid) {
@@ -49,7 +51,7 @@ class ConversationHandler {
 
             @Override
             public void onSuccess(Conversation conversations) {
-                System.out.println("conversation-" + conversationName);
+                System.out.println("conversation-" + conversations.getStatus().toString());
                 addParticipant(identity, conversationName, result);
                 result.success(Strings.createConversationSuccess);
             }
@@ -57,7 +59,11 @@ class ConversationHandler {
             @Override
             public void onError(ErrorInfo errorInfo) {
                 System.out.println("onError->" + errorInfo.getMessage());
-                result.success(Strings.createConversationFailure);
+                if (errorInfo.getMessage().equals("Conversation with provided unique name already exists")){
+                    result.success(Strings.conversationExists);
+                }else {
+                    result.success(Strings.createConversationFailure);
+                }
                 CallbackListener.super.onError(errorInfo);
             }
         });
@@ -104,7 +110,7 @@ class ConversationHandler {
 
                     @Override
                     public void onSuccess() {
-                        receiveMessages(conversationId);
+                        receiveMessages(conversationId,null);
                     }
                     @Override
                     public void onError(ErrorInfo errorInfo) {
@@ -141,7 +147,7 @@ class ConversationHandler {
                             @Override
                             public void onSuccess(Object data) {
                                 System.out.println("send");
-                                receiveMessages(conversationId);
+                                receiveMessages(conversationId,null);
                                 result.success("send");
                             }
 
@@ -159,26 +165,51 @@ class ConversationHandler {
         });
     }
 
-    /// Get messages from the specific conversation #
-    protected static void receiveMessages(String conversationId){
-        conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
+    protected static void subscribeToMessageUpdate(String conversationId, EventSink eventSink){
+        ConversationHandler classA = new ConversationHandler();
+//        classA.setListener(new TwilioChatConversationPlugin());
 
+        conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
             @Override
             public void onSuccess(Conversation result) {
                 // Retrieve the conversation object using the conversation SID
-
+//                System.out.println("result.getSid()->"+eventSink.toString());
                 // Join the conversation with the given participant identity
                 result.addListener(new ConversationListener() {
+
                     @Override
                     public void onMessageAdded(Message message) {
+
+                        try {
+                            System.out.println("onMessageAdded->"+message.getDateCreated());
+//                        if (eventSink != null){
+                            Map<String, Object> messagesMap = new HashMap<>();
+                            messagesMap.put("sid",message.getSid());
+                            messagesMap.put("author",message.getAuthor());
+                            messagesMap.put("body",message.getBody());
+                            messagesMap.put("attributes",message.getAttributes().toString());
+                            messagesMap.put("dateCreated",message.getDateCreated());
+                            System.out.println("messagesMap-"+message.getDateCreated());
+//                            ConversationHandler classA = new ConversationHandler();
+                            triggerEvent(messagesMap);
+
+
+//                            eventSink.success(messagesMap);
+//                        }
+                        }catch (Exception e){
+                            System.out.println("Exception-"+e.getMessage());
+                        }
                     }
 
                     @Override
                     public void onMessageUpdated(Message message, Message.UpdateReason reason) {
+                        System.out.println("onMessageUpdated->"+message.toString());
+                        System.out.println("reason->"+reason.toString());
                     }
 
                     @Override
                     public void onMessageDeleted(Message message) {
+                        System.out.println("onMessageDeleted->"+message.toString());
                     }
 
                     @Override
@@ -217,6 +248,84 @@ class ConversationHandler {
         });
     }
 
+
+    /// Get messages from the specific conversation #
+    protected static void receiveMessages(String conversationId, EventSink eventSink){
+//        conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
+//            @Override
+//            public void onSuccess(Conversation result) {
+//                // Retrieve the conversation object using the conversation SID
+//                System.out.println("result.getSid()->"+result.getSid());
+//                // Join the conversation with the given participant identity
+//                result.addListener(new ConversationListener() {
+//
+//                    @Override
+//                    public void onMessageAdded(Message message) {
+//
+//                        try {
+//                            System.out.println("onMessageAdded->"+message.getDateCreated());
+////                        if (eventSink != null){
+//                            Map<String, Object> messagesMap = new HashMap<>();
+//                            messagesMap.put("sid",message.getSid());
+//                            messagesMap.put("author",message.getAuthor());
+//                            messagesMap.put("body",message.getBody());
+//                            messagesMap.put("attributes",message.getAttributes().toString());
+//                            messagesMap.put("dateCreated",message.getDateCreated());
+//                            System.out.println("messagesMap-"+message.getDateCreated());
+//                            eventSink.success(messagesMap);
+////                        }
+//                        }catch (Exception e){
+//                            System.out.println("Exception-"+e.getMessage());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onMessageUpdated(Message message, Message.UpdateReason reason) {
+//                        System.out.println("onMessageUpdated->"+message.toString());
+//                        System.out.println("reason->"+reason.toString());
+//                    }
+//
+//                    @Override
+//                    public void onMessageDeleted(Message message) {
+//                        System.out.println("onMessageDeleted->"+message.toString());
+//                    }
+//
+//                    @Override
+//                    public void onParticipantAdded(Participant participant) {
+//                    }
+//
+//                    @Override
+//                    public void onParticipantUpdated(Participant participant, Participant.UpdateReason reason) {
+//                    }
+//
+//
+//                    @Override
+//                    public void onParticipantDeleted(Participant participant) {
+//                    }
+//
+//                    @Override
+//                    public void onTypingStarted(Conversation conversation, Participant participant) {
+//                    }
+//
+//                    @Override
+//                    public void onTypingEnded(Conversation conversation, Participant participant) {
+//                    }
+//
+//                    @Override
+//                    public void onSynchronizationChanged(Conversation conversation) {
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onError(ErrorInfo errorInfo) {
+//                System.out.println("client12-" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
+//
+//                CallbackListener.super.onError(errorInfo);
+//            }
+//        });
+    }
+
     /// Get list of conversations for logged in user #
     protected static List<Map<String, Object>> getConversationsList(){
         List<Conversation> conversationList = conversationClient.getMyConversations();
@@ -240,11 +349,6 @@ class ConversationHandler {
         return  list;
     }
 
-//    private static CallbackListener<Long> longCallbackListener() {
-//        System.out.println("messagesMap-"+Long.numberOfLeadingZeros.to);
-//        return count;
-//    }
-
     /// Get messages from the specific conversation #
     protected static void getAllMessages(String conversationId, MethodChannel.Result result){
         List<Map<String, Object>> list = new ArrayList<>();
@@ -265,14 +369,10 @@ class ConversationHandler {
                             messagesMap.put("attributes",messagesList.get(i).getAttributes().toString());
                             messagesMap.put("dateCreated",messagesList.get(i).getDateCreated());
                             System.out.println("messagesMap-"+messagesList.get(i).getDateCreated());
-
                             list.add(messagesMap);
-
                         }
-                        System.out.println("list->"+list);
                         result.success(list);
                     }
-
                     @Override
                     public void onError(ErrorInfo errorInfo) {
                         // Error occurred while retrieving the messages
@@ -280,7 +380,6 @@ class ConversationHandler {
                     }
                 });
             }
-
             @Override
             public void onError(ErrorInfo errorInfo) {
                 CallbackListener.super.onError(errorInfo);
@@ -330,5 +429,19 @@ class ConversationHandler {
                 result.success(participantList);
             }
         });
+    }
+
+    public void setListener(MessageDelegate listener) {
+        this.listener = listener;
+    }
+
+    public static void triggerEvent(Map event) {
+        // Perform the necessary operations and obtain the result
+        String result = "This is the result of the event";
+
+        // Pass the result through the listener
+        if (listener != null) {
+            listener.onMessageUpdated(event);
+        }
     }
 }

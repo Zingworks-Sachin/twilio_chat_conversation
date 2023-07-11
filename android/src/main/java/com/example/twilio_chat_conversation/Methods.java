@@ -11,4 +11,6 @@ class Methods {
     final static String addParticipant = "addParticipant";
     final static String receiveMessages = "receiveMessages";
     final static String getParticipants = "getParticipants";
+    final static String unSubscribeToMessageUpdate = "unSubscribeToMessageUpdate";
+    final static String subscribeToMessageUpdate = "subscribeToMessageUpdate";
 }
