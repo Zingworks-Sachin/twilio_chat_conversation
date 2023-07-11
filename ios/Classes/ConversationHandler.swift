@@ -35,7 +35,7 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
                 var updatedMessage: [String: Any] = [:]
                 updatedMessage["conversationId"] = conversation.sid ?? ""
                 updatedMessage["message"] = messageDict
-                self.messageDelegate?.messageUpdated(message: updatedMessage, messageSubscriptionId: self.messageSubscriptionId)
+                self.messageDelegate?.onMessageUpdate(message: updatedMessage, messageSubscriptionId: self.messageSubscriptionId)
             }
         }
     }

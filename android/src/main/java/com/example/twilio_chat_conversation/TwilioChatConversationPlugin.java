@@ -110,7 +110,7 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   }
 
   @Override
-  public void onMessageUpdated(Map event) {
+  public void onMessageUpdate(Map event) {
     /// Pass the event result back to the Flutter side
     if (this.eventSink != null) {
       this.eventSink.success(event);

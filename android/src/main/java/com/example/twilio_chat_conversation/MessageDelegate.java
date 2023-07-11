@@ -4,5 +4,5 @@ import io.flutter.plugin.common.EventChannel;
 
 public interface MessageDelegate {
     void setEventSink(EventChannel.EventSink eventSink);
-    void onMessageUpdated(Map event);
+    void onMessageUpdate(Map event);
 }

@@ -441,7 +441,7 @@ class ConversationHandler {
 
         // Pass the result through the listener
         if (listener != null) {
-            listener.onMessageUpdated(event);
+            listener.onMessageUpdate(event);
         }
     }
 }

@@ -164,7 +164,7 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
 }
 
 extension TwilioChatConversationPlugin : MessageDelegate {
-    func messageUpdated(message: [String : Any], messageSubscriptionId: String) {
+    func onMessageUpdate(message: [String : Any], messageSubscriptionId: String) {
         if let conversationId = message["conversationId"] as? String,let message = message["message"] as? [String:Any] {
             if (messageSubscriptionId == conversationId) {
                 self.eventSink?(message)
