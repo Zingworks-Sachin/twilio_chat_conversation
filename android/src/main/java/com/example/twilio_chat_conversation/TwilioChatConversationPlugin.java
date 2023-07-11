@@ -2,6 +2,8 @@ package com.example.twilio_chat_conversation;
 
 import androidx.annotation.NonNull;
 
+import com.example.twilio_chat_conversation.Interface.MessageInterface;
+
 import java.util.List;
 import java.util.Map;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -11,11 +13,10 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.EventChannel.EventSink;
-
 import io.flutter.plugin.common.EventChannel.StreamHandler;
 
 /** TwilioChatConversationPlugin */
-public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHandler , StreamHandler , MessageDelegate {
+public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHandler , StreamHandler , MessageInterface {
   /// The MethodChannel that will the communication between Flutter and native Android
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
@@ -23,13 +24,10 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   private EventChannel eventChannel;
   private EventChannel.EventSink eventSink;
 
-
-
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "twilio_chat_conversation");
     channel.setMethodCallHandler(this);
-
     eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "twilio_chat_conversation/onMessageUpdated");
     eventChannel.setStreamHandler(this);
 
@@ -40,6 +38,7 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     System.out.println("call.method->"+call.method);
     switch (call.method) {
+      // To generate twilio access token #
       case Methods.generateToken: //Generate token and authenticate user
         String accessToken = ConversationHandler.generateAccessToken(call.argument("accountSid"),call.argument("apiKey"),call.argument("apiSecret"),call.argument("identity"),call.argument("serviceSid"));
         System.out.println("accessToken generated->"+accessToken);
@@ -74,11 +73,14 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
       // Get & Listen messages from the specific conversation #
       case Methods.receiveMessages:
       case Methods.subscribeToMessageUpdate:
-        ConversationHandler.subscribeToMessageUpdate(call.argument("conversationId"),this.eventSink);
+        ConversationHandler.subscribeToMessageUpdate(call.argument("conversationId"));
         break;
       // Get participants from the specific conversation #
       case Methods.getParticipants:
         ConversationHandler.getParticipants(call.argument("conversationId"),result);
+        break;
+      case Methods.unSubscribeToMessageUpdate:
+        ConversationHandler.unSubscribeToMessageUpdate(call.argument("conversationId"));
         break;
       default:
         break;
@@ -88,16 +90,15 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
-    eventChannel.setStreamHandler(null);  }
+    eventChannel.setStreamHandler(null);
+  }
 
   @Override
   public void onListen(Object arguments, EventSink events) {
     this.eventSink = events;
-    setEventSink(events);
     ConversationHandler conversationHandler = new ConversationHandler();
     conversationHandler.setListener(this);
   }
-
 
   @Override
   public void onCancel(Object arguments) {
@@ -105,15 +106,10 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   }
 
   @Override
-  public void setEventSink(EventSink eventSink) {
-    this.eventSink = eventSink;
-  }
-
-  @Override
-  public void onMessageUpdate(Map event) {
-    /// Pass the event result back to the Flutter side
+  public void onMessageUpdate(Map message) {
+    /// Pass the message result back to the Flutter side
     if (this.eventSink != null) {
-      this.eventSink.success(event);
+      this.eventSink.success(message);
     }
   }
 }
