@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:twilio_chat_conversation/twilio_chat_conversation.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/common/providers/chats_provider.dart';
 import 'package:twilio_chat_conversation_example/chat/common/providers/models_provider.dart';
+import 'package:twilio_chat_conversation_example/chat/common/toast_utility.dart';
 import 'package:twilio_chat_conversation_example/chat/repository/chat_repository.dart';
 import 'package:twilio_chat_conversation_example/chat/screens/home_screen.dart';
 
@@ -31,8 +33,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     initPlatformState();
+
     _twilioChatConversationPlugin.onTokenStatusChanges.listen((event) {
       print("onTokenStatusChanges->$event");
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        ToastUtility.showToastAtCenter("event");
+      });
     });
   }
 

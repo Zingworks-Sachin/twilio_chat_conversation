@@ -1,5 +1,6 @@
 package com.example.twilio_chat_conversation.Conversation;
 
+import com.example.twilio_chat_conversation.Interface.AccessTokenInterface;
 import com.example.twilio_chat_conversation.Interface.MessageInterface;
 import com.example.twilio_chat_conversation.Utility.Strings;
 import com.twilio.conversations.Attributes;
@@ -26,7 +27,9 @@ public class ConversationHandler {
     /// Entry point for the Conversations SDK.
     protected static  ConversationsClient conversationClient;
     public static FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
-    private static MessageInterface listener;
+    private static MessageInterface messageInterface;
+    private static AccessTokenInterface accessTokenInterface;
+
 
     /// Generate token and authenticate user #
     public static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity, String serviceSid) {
@@ -34,7 +37,7 @@ public class ConversationHandler {
         AccessToken.Builder builder = new AccessToken.Builder(accountSid, apiKey, apiSecret);
         // Set the identity of the token
         builder.identity(identity);
-        builder.ttl(60);
+        builder.ttl(0);
 //        builder.ttl(3600);
         // Create a Chat grant and add it to the token
         ChatGrant chatGrant = new ChatGrant();
@@ -289,7 +292,7 @@ public class ConversationHandler {
 
                     @Override
                     public void onConversationAdded(Conversation conversation) {
-
+                        System.out.println("onConversationAdded");
                     }
 
                     @Override
@@ -365,11 +368,13 @@ public class ConversationHandler {
                     @Override
                     public void onTokenExpired() {
                         System.out.println("onTokenExpired");
+                        onTokenStatusChange("Access token expired");
                     }
 
                     @Override
                     public void onTokenAboutToExpire() {
                         System.out.println("onTokenAboutToExpire");
+                        onTokenStatusChange("Access token will expire");
                     }
                 });
                 result.success(Strings.authenticationSuccessful);
@@ -402,12 +407,22 @@ public class ConversationHandler {
         });
     }
     public void setListener(MessageInterface listener) {
-        ConversationHandler.listener = listener;
+        ConversationHandler.messageInterface = listener;
+    }
+    public void setTokenListener(AccessTokenInterface listener) {
+        ConversationHandler.accessTokenInterface = listener;
     }
     public static void triggerEvent(Map message) {
-        // Pass the result through the listener
-        if (listener != null) {
-            listener.onMessageUpdate(message);
+        // Pass the result through the messageInterface
+        if (messageInterface != null) {
+            messageInterface.onMessageUpdate(message);
+        }
+    }
+    public static void onTokenStatusChange(String status) {
+        // Pass the result through the messageInterface
+        System.out.println("accessTokenInterface->" + accessTokenInterface.toString());
+        if (accessTokenInterface != null) {
+            accessTokenInterface.onTokenStatusChange(status);
         }
     }
 }

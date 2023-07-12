@@ -68,6 +68,7 @@ class TwilioChatConversation {
   }
   Stream<String> get onTokenStatusChanges {
     _tokenEventChannel.receiveBroadcastStream().listen((dynamic tokenStatus) {
+      print("tokenStatus->$tokenStatus");
       _tokenStatusController.add(tokenStatus);
     });
     return _tokenStatusController.stream;

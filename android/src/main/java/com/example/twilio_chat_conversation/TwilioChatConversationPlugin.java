@@ -3,6 +3,7 @@ package com.example.twilio_chat_conversation;
 import androidx.annotation.NonNull;
 
 import com.example.twilio_chat_conversation.Conversation.ConversationHandler;
+import com.example.twilio_chat_conversation.Interface.AccessTokenInterface;
 import com.example.twilio_chat_conversation.Interface.MessageInterface;
 import com.example.twilio_chat_conversation.Utility.Methods;
 
@@ -18,13 +19,15 @@ import io.flutter.plugin.common.EventChannel.EventSink;
 import io.flutter.plugin.common.EventChannel.StreamHandler;
 
 /** TwilioChatConversationPlugin */
-public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHandler , StreamHandler , MessageInterface {
+public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHandler , StreamHandler , MessageInterface, AccessTokenInterface {
   /// The MethodChannel that will the communication between Flutter and native Android
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
   private EventChannel eventChannel;
+  private EventChannel tokenEventChannel;
   private EventChannel.EventSink eventSink;
+  private EventChannel.EventSink tokenEventSink;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -32,6 +35,8 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
     channel.setMethodCallHandler(this);
     eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "twilio_chat_conversation/onMessageUpdated");
     eventChannel.setStreamHandler(this);
+    tokenEventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "twilio_chat_conversation/onTokenStatusChange");
+    tokenEventChannel.setStreamHandler(this);
 
     ConversationHandler.flutterPluginBinding = flutterPluginBinding;
   }
@@ -93,18 +98,22 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
     eventChannel.setStreamHandler(null);
+    tokenEventChannel.setStreamHandler(null);
   }
 
   @Override
   public void onListen(Object arguments, EventSink events) {
     this.eventSink = events;
+    this.tokenEventSink = events;
     ConversationHandler conversationHandler = new ConversationHandler();
     conversationHandler.setListener(this);
+    conversationHandler.setTokenListener(this);
   }
 
   @Override
   public void onCancel(Object arguments) {
     eventSink = null;
+    tokenEventSink = null;
   }
 
   @Override
@@ -112,6 +121,14 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
     /// Pass the message result back to the Flutter side
     if (this.eventSink != null) {
       this.eventSink.success(message);
+    }
+  }
+
+  @Override
+  public void onTokenStatusChange(String message) {
+    /// Pass the message result back to the Flutter side
+    if (this.tokenEventSink != null) {
+      this.tokenEventSink.success(message);
     }
   }
 }
