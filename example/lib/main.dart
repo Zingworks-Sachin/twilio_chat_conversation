@@ -31,6 +31,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     initPlatformState();
+    _twilioChatConversationPlugin.onTokenStatusChanges.listen((event) {
+      print("onTokenStatusChanges->$event");
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

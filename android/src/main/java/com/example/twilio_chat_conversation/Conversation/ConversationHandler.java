@@ -1,14 +1,17 @@
-package com.example.twilio_chat_conversation;
+package com.example.twilio_chat_conversation.Conversation;
 
 import com.example.twilio_chat_conversation.Interface.MessageInterface;
+import com.example.twilio_chat_conversation.Utility.Strings;
 import com.twilio.conversations.Attributes;
 import com.twilio.conversations.CallbackListener;
 import com.twilio.conversations.Conversation;
 import com.twilio.conversations.ConversationListener;
 import com.twilio.conversations.ConversationsClient;
+import com.twilio.conversations.ConversationsClientListener;
 import com.twilio.conversations.Message;
 import com.twilio.conversations.Participant;
 import com.twilio.conversations.StatusListener;
+import com.twilio.conversations.User;
 import com.twilio.jwt.accesstoken.AccessToken;
 import com.twilio.jwt.accesstoken.ChatGrant;
 import com.twilio.util.ErrorInfo;
@@ -19,18 +22,20 @@ import java.util.Map;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodChannel;
 
-class ConversationHandler {
+public class ConversationHandler {
     /// Entry point for the Conversations SDK.
     protected static  ConversationsClient conversationClient;
-    protected static FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
+    public static FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     private static MessageInterface listener;
 
     /// Generate token and authenticate user #
-    protected static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity, String serviceSid) {
+    public static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity, String serviceSid) {
         // Create an AccessToken builder
         AccessToken.Builder builder = new AccessToken.Builder(accountSid, apiKey, apiSecret);
         // Set the identity of the token
         builder.identity(identity);
+        builder.ttl(60);
+//        builder.ttl(3600);
         // Create a Chat grant and add it to the token
         ChatGrant chatGrant = new ChatGrant();
         chatGrant.setServiceSid(serviceSid);
@@ -40,7 +45,7 @@ class ConversationHandler {
         return token.toJwt();
     }
     /// Create new conversation #
-    protected static void createConversation(String conversationName, String identity, MethodChannel.Result result) {
+    public static void createConversation(String conversationName, String identity, MethodChannel.Result result) {
         conversationClient.createConversation(conversationName, new CallbackListener<Conversation>() {
             @Override
             public void onSuccess(Conversation conversations) {
@@ -59,7 +64,7 @@ class ConversationHandler {
         });
     }
     /// Add participant in a conversation #
-    protected static void addParticipant(String participantName, String conversationId, MethodChannel.Result result){
+    public static void addParticipant(String participantName, String conversationId, MethodChannel.Result result){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
             @Override
             public void onSuccess(Conversation conversation) {
@@ -84,7 +89,7 @@ class ConversationHandler {
         });
     }
     ///Join the existing conversation #
-    protected static String joinConversation(String conversationId){
+    public static String joinConversation(String conversationId){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
             @Override
             public void onSuccess(Conversation result) {
@@ -107,7 +112,7 @@ class ConversationHandler {
         return conversationId;
     }
     /// Send message #
-    protected static void sendMessages(String enteredMessage, String conversationId, boolean isFromChatGpt, MethodChannel.Result result){
+    public static void sendMessages(String enteredMessage, String conversationId, boolean isFromChatGpt, MethodChannel.Result result){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
             @Override
             public void onSuccess(Conversation conversation) {
@@ -133,7 +138,7 @@ class ConversationHandler {
         });
     }
     /// Subscribe To Message Update #
-    protected static void subscribeToMessageUpdate(String conversationId){
+    public static void subscribeToMessageUpdate(String conversationId){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
             @Override
             public void onSuccess(Conversation result) {
@@ -204,7 +209,7 @@ class ConversationHandler {
         });
     }
     /// Unsubscribe To Message Update #
-    protected static void unSubscribeToMessageUpdate(String conversationId){
+    public static void unSubscribeToMessageUpdate(String conversationId){
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
             @Override
             public void onSuccess(Conversation result) {
@@ -220,7 +225,7 @@ class ConversationHandler {
         });
     }
     /// Get list of conversations for logged in user #
-    protected static List<Map<String, Object>> getConversationsList() {
+    public static List<Map<String, Object>> getConversationsList() {
         List<Conversation> conversationList = conversationClient.getMyConversations();
         System.out.println(conversationList.size()+"");
         List<Map<String, Object>> list = new ArrayList<>();
@@ -242,7 +247,7 @@ class ConversationHandler {
         return  list;
     }
     /// Get messages from the specific conversation #
-    protected static void getAllMessages(String conversationId, MethodChannel.Result result) {
+    public static void getAllMessages(String conversationId, MethodChannel.Result result) {
         List<Map<String, Object>> list = new ArrayList<>();
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>() {
             @Override
@@ -274,12 +279,99 @@ class ConversationHandler {
             }
         });
     }
-    protected static void init(String accessToken, MethodChannel.Result result) {
+    public static void init(String accessToken, MethodChannel.Result result) {
         ConversationsClient.Properties props = ConversationsClient.Properties.newBuilder().createProperties();
         ConversationsClient.create(flutterPluginBinding.getApplicationContext(), accessToken, props, new CallbackListener<ConversationsClient>() {
             @Override
             public void onSuccess(ConversationsClient client) {
                 ConversationHandler.conversationClient = client;
+                client.addListener(new ConversationsClientListener() {
+
+                    @Override
+                    public void onConversationAdded(Conversation conversation) {
+
+                    }
+
+                    @Override
+                    public void onConversationUpdated(Conversation conversation, Conversation.UpdateReason reason) {
+
+                    }
+
+                    @Override
+                    public void onConversationDeleted(Conversation conversation) {
+
+                    }
+
+                    @Override
+                    public void onConversationSynchronizationChange(Conversation conversation) {
+
+                    }
+
+                    @Override
+                    public void onError(ErrorInfo errorInfo) {
+
+                    }
+
+                    @Override
+                    public void onUserUpdated(User user, User.UpdateReason reason) {
+
+                    }
+
+                    @Override
+                    public void onUserSubscribed(User user) {
+
+                    }
+
+                    @Override
+                    public void onUserUnsubscribed(User user) {
+
+                    }
+
+                    @Override
+                    public void onClientSynchronization(ConversationsClient.SynchronizationStatus status) {
+
+                    }
+
+                    @Override
+                    public void onNewMessageNotification(String conversationSid, String messageSid, long messageIndex) {
+
+                    }
+
+                    @Override
+                    public void onAddedToConversationNotification(String conversationSid) {
+
+                    }
+
+                    @Override
+                    public void onRemovedFromConversationNotification(String conversationSid) {
+
+                    }
+
+                    @Override
+                    public void onNotificationSubscribed() {
+
+                    }
+
+                    @Override
+                    public void onNotificationFailed(ErrorInfo errorInfo) {
+
+                    }
+
+                    @Override
+                    public void onConnectionStateChange(ConversationsClient.ConnectionState state) {
+
+                    }
+
+                    @Override
+                    public void onTokenExpired() {
+                        System.out.println("onTokenExpired");
+                    }
+
+                    @Override
+                    public void onTokenAboutToExpire() {
+                        System.out.println("onTokenAboutToExpire");
+                    }
+                });
                 result.success(Strings.authenticationSuccessful);
             }
             @Override
@@ -289,7 +381,7 @@ class ConversationHandler {
         });
     }
     /// Get participants from the specific conversation #
-    protected static void getParticipants(String conversationId, MethodChannel.Result result) {
+    public static void getParticipants(String conversationId, MethodChannel.Result result) {
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>() {
             @Override
             public void onSuccess(Conversation conversation) {

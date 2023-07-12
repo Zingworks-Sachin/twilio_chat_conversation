@@ -4,10 +4,15 @@ import 'twilio_chat_conversation_platform_interface.dart';
 
 class TwilioChatConversation {
 
-  static const EventChannel _eventChannel = EventChannel('twilio_chat_conversation/onMessageUpdated');
+  static const EventChannel _messageEventChannel = EventChannel('twilio_chat_conversation/onMessageUpdated');
+  static const EventChannel _tokenEventChannel = EventChannel('twilio_chat_conversation/onTokenStatusChange');
+
   static final StreamController<Map> _messageUpdateController = StreamController<Map>.broadcast();
+  static final StreamController<String> _tokenStatusController = StreamController<String>.broadcast();
+
 
   Stream<Map> get onMessageReceived => _messageUpdateController.stream;
+  Stream<String> get onTokenStatusChange => _tokenStatusController.stream;
 
   Future<String?> getPlatformVersion() {
     return TwilioChatConversationPlatform.instance.getPlatformVersion();
@@ -51,14 +56,20 @@ class TwilioChatConversation {
 
   void subscribeToMessageUpdate({required String conversationSid}) async  {
      TwilioChatConversationPlatform.instance.subscribeToMessageUpdate(conversationId: conversationSid);
-     _eventChannel.receiveBroadcastStream(conversationSid).listen((dynamic batteryLevel) {
-       _messageUpdateController.add(batteryLevel);
+     _messageEventChannel.receiveBroadcastStream(conversationSid).listen((dynamic message) {
+       _messageUpdateController.add(message);
      });
   }
 
-  void unSubscribeToMessageUpdate({required String conversationSid}) {
+  void unSubscribeToMessageUpdate ({required String conversationSid}) {
      TwilioChatConversationPlatform.instance.unSubscribeToMessageUpdate(conversationId: conversationSid);
      // _messageUpdateController.close();
      // _messageUpdateController = StreamController<Map>();
+  }
+  Stream<String> get onTokenStatusChanges {
+    _tokenEventChannel.receiveBroadcastStream().listen((dynamic tokenStatus) {
+      _tokenStatusController.add(tokenStatus);
+    });
+    return _tokenStatusController.stream;
   }
 }

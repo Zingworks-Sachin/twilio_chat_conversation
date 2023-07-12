@@ -66,6 +66,13 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   }
   void subscribeToMessageUpdate() {
     twilio.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
+    // twilio.onTokenStatusChanges.listen((event) {
+    //   print("onTokenStatusChanges->$event");
+    // });
+    // twilio.onTokenStatusChange.listen((event) {
+    //
+    // });
+
     twilio.onMessageReceived.listen((event) {
       if (mounted){
         setState(() {

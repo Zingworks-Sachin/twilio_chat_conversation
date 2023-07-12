@@ -5,7 +5,8 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
 
     // MARK: Conversations variables
     private var client: TwilioConversationsClient?
-    weak var messageDelegate: MessageDelegate?
+    weak var conversationDelegate: ConversationDelegate?
+    weak var tokenDelegate:TokenDelegate?
     public var messageSubscriptionId: String = ""
 
 //    func conversationsClient(_ client: TwilioConversationsClient, synchronizationStatusUpdated status: TCHClientSynchronizationStatus) {
@@ -35,19 +36,23 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
                 var updatedMessage: [String: Any] = [:]
                 updatedMessage["conversationId"] = conversation.sid ?? ""
                 updatedMessage["message"] = messageDict
-                self.messageDelegate?.onMessageUpdate(message: updatedMessage, messageSubscriptionId: self.messageSubscriptionId)
+                self.conversationDelegate?.onMessageUpdate(message: updatedMessage, messageSubscriptionId: self.messageSubscriptionId)
             }
         }
     }
     
     func conversationsClientTokenWillExpire(_ client: TwilioConversationsClient) {
         print("Access token will expire.")
+        let twilioChatConversationPlugin = TwilioChatConversationPlugin()
+        self.tokenDelegate = twilioChatConversationPlugin.self
+        self.tokenDelegate?.onTokenStatusChange(status: "Access token will expire")
         refreshAccessToken()
     }
     
     func conversationsClientTokenExpired(_ client: TwilioConversationsClient) {
-        print("Access token expired.")
-        refreshAccessToken()
+        print("Access token expired.\(client.connectionState)")
+//        self.tokenDelegate?.onTokenStatusChange(status: "Access token expired")
+//        refreshAccessToken()
     }
     
     private func refreshAccessToken() {
