@@ -47,23 +47,26 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
           TwilioApi.requestTwilioAccessToken(identity:arguments?["identity"] as! String) { apiResult in
               switch apiResult {
               case .success(let accessToken):
-                  self.conversationsHandler.loginWithAccessToken(accessToken) { loginResult in
-                      guard let loginResultSuccessful: Bool = loginResult?.isSuccessful else {
-                          return
-                      }
-                      if(loginResultSuccessful) {
-                          result(Strings.authenticationSuccessful)
-                      }else {
-                          result(Strings.authenticationFailed)
-                      }
-                  }
+                  result(accessToken)
               case .failure(let error):
                   print("Error requesting Twilio Access Token: \(error)")
-                  result(Strings.authenticationFailed)
+                  result("")
               }
           }
           break
           
+      case Methods.initializeConversationClient:
+          self.conversationsHandler.loginWithAccessToken(arguments?["accessToken"] as! String) { loginResult in
+              guard let loginResultSuccessful: Bool = loginResult?.isSuccessful else {
+                  return
+              }
+              if(loginResultSuccessful) {
+                  result(Strings.authenticationSuccessful)
+              }else {
+                  result(Strings.authenticationFailed)
+              }
+          }
+          break
       case Methods.createConversation:
           self.conversationsHandler.createConversation (uniqueConversationName: arguments?["conversationName"] as! String){ (success, conversation,status)  in
               if success, let conversation = conversation {

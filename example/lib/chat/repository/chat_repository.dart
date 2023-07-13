@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:twilio_chat_conversation/twilio_chat_conversation.dart';
+import 'package:twilio_chat_conversation_example/chat/common/api/api_provider.dart';
 import 'package:twilio_chat_conversation_example/chat/common/models/chat_model.dart';
 
 abstract class ChatRepository {
-  Future<String> init();
+  Future<String> initializeConversationClient(String accessToken);
   Future<String> generateToken(credentials);
+  Future<String> getAccessTokenFromServer(credentials);
   Future<String> createConversation(conversationName, identity);
   Future<String> joinConversation(conversationId);
   Future<String> sendMessage(enteredMessage, conversationId, isFromGhatGpt);
@@ -19,6 +23,7 @@ abstract class ChatRepository {
 class ChatRepositoryImpl implements ChatRepository {
   final platform = const MethodChannel('twilio_chatgpt/twilio_sdk_connection');
   final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
+  final _apiProvider = ApiProvider();
 
   //final ApiProvider _apiProvider = ApiProvider();
 
@@ -26,10 +31,7 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> createConversation(conversationName, identity) async {
     String response;
     try {
-      // final String result = await platform.invokeMethod('createConversation',
-      //     {"conversationName": conversationName, "identity": identity});
       final String result = await twilioChatConversationPlugin.createConversation(conversationName:conversationName, identity: identity) ?? "UnImplemented Error";
-      //print("createConversation result-->$result");
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -42,13 +44,15 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> generateToken(credentials) async {
     String response;
     try {
-      final String result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'], serviceSid: credentials['serviceSid']) ?? "UnImplemented Error";
-      // final String result = await platform.invokeMethod('generateToken', {
-      //   "accountSid": credentials['accountSid'],
-      //   "apiKey": credentials['apiKey'],
-      //   "apiSecret": credentials['apiSecret'],
-      //   "identity": credentials['identity']
-      // });
+      // final String result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'], serviceSid: credentials['serviceSid']) ?? "UnImplemented Error";
+      // response = result;
+
+      String result = "";
+      if (Platform.isAndroid){
+        result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'], serviceSid: credentials['serviceSid']) ?? "UnImplemented Error";
+      }else {
+
+      }
       response = result;
       //print("generateToken result-->$response");
       return response;
@@ -59,11 +63,10 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<String> init() async {
+  Future<String> initializeConversationClient(String accessToken) async {
     String response;
     try {
-      final String result =
-          await platform.invokeMethod('init', {"mobileNumber": ""});
+      final String result = await twilioChatConversationPlugin.initializeConversationClient(accessToken: accessToken) ?? "UnImplemented Error";
       response = result;
     } on PlatformException catch (e) {
       response = e.message.toString();
@@ -181,6 +184,16 @@ class ChatRepositoryImpl implements ChatRepository {
     } on PlatformException catch (e) {
       //print("getParticipants error->$e");
       return [];
+    }
+  }
+
+  @override
+  Future<String> getAccessTokenFromServer(credentials) async {
+    Map<String, dynamic> response = await _apiProvider.get(credentials["identity"]);
+    if (response["statusCode"] == 200){
+      return response["token"];
+    }else {
+      return response[""];
     }
   }
 }

@@ -14,7 +14,6 @@ class ApiProvider {
     var responseJson;
     try {
       var url = Uri.parse(ApiConstants.baseUrl + request);
-
       // PrintUtility.printText("Url---------->$url");
 
       final response = await http.get(url, headers: {

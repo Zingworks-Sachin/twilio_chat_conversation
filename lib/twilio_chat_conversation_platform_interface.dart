@@ -66,4 +66,12 @@ abstract class TwilioChatConversationPlatform extends PlatformInterface {
   Future<String?> unSubscribeToMessageUpdate({required String conversationId}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<String?> initializeConversationClient({required String accessToken}) {
+    throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  Future<String?> updateAccessToken({required String accessToken}) {
+    throw UnimplementedError('platformVersion() has not been implemented.');
+  }
 }

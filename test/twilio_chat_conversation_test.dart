@@ -77,6 +77,18 @@ class MockTwilioChatConversationPlatform
     throw UnimplementedError();
   }
 
+  @override
+  Future<String?> initializeConversationClient({required String accessToken}) {
+    // TODO: implement initializeConversationClient
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> updateAccessToken({required String accessToken}) {
+    // TODO: implement updateAccessToken
+    throw UnimplementedError();
+  }
+
 
 }
 

@@ -13,4 +13,6 @@ public class Methods {
     public final static String getParticipants = "getParticipants";
     public final static String unSubscribeToMessageUpdate = "unSubscribeToMessageUpdate";
     public final static String subscribeToMessageUpdate = "subscribeToMessageUpdate";
+    public final static String initializeConversationClient = "initializeConversationClient";
+    public final static String updateAccessToken = "updateAccessToken";
 }

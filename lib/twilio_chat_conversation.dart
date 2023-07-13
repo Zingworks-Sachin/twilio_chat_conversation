@@ -18,6 +18,10 @@ class TwilioChatConversation {
     return TwilioChatConversationPlatform.instance.generateToken(accountSid: accountSid,apiKey:apiKey,apiSecret:apiSecret,identity:identity,serviceSid:serviceSid);
   }
 
+  Future<String?> initializeConversationClient({required String accessToken}) {
+    return TwilioChatConversationPlatform.instance.initializeConversationClient(accessToken: accessToken);
+  }
+
   Future<String?> createConversation({required String conversationName,required String identity}) {
     return TwilioChatConversationPlatform.instance.createConversation(conversationName: conversationName, identity:identity);
   }
@@ -62,14 +66,10 @@ class TwilioChatConversation {
 
   void unSubscribeToMessageUpdate ({required String conversationSid}) {
      TwilioChatConversationPlatform.instance.unSubscribeToMessageUpdate(conversationId: conversationSid);
-     // _messageUpdateController.close();
-     // _messageUpdateController = StreamController<Map>();
   }
 
-  void updateAccessToken ({required String token}) {
-    TwilioChatConversationPlatform.instance.unSubscribeToMessageUpdate(conversationId: "");
-    // _messageUpdateController.close();
-    // _messageUpdateController = StreamController<Map>();
+  void updateAccessToken ({required String accessToken}) {
+    TwilioChatConversationPlatform.instance.updateAccessToken(accessToken: accessToken);
   }
 
   Stream<Map> get onTokenStatusChange {

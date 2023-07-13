@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
 import 'package:twilio_chat_conversation_example/chat/common/models/chat_model.dart';
+import 'package:twilio_chat_conversation_example/chat/common/value_string.dart';
 import 'package:twilio_chat_conversation_example/chat/repository/chat_repository.dart';
 
 
@@ -14,13 +17,38 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
     on<GenerateTokenEvent>((event, emit) async {
       emit(GenerateTokenLoadingState());
       try {
-        String result = await chatRepository.generateToken(event.credentials);
-        emit(GenerateTokenLoadedState(token: result));
+        String result = "";
+        if (Platform.isAndroid){
+          result = await chatRepository.generateToken(event.credentials);
+        }else {
+          result = await chatRepository.getAccessTokenFromServer(event.credentials);
+        }
+        if (result != ""){
+          emit(GenerateTokenLoadedState(token: result));
+        }else {
+          emit(GenerateTokenErrorState(message: ValueString.errorGettingAccessToken));
+        }
       } catch (e) {
         emit(GenerateTokenErrorState(message: e.toString()));
       }
     });
-    on<CreateConversionEvent>((event, emit) async {
+
+    on<InitializeConversationClientEvent>((event, emit) async {
+      emit(InitializeConversationClientLoadingState());
+      try {
+        String result = await chatRepository.initializeConversationClient(event.accessToken);
+        print("InitializeConversationClientEvent->$result");
+        if (result == ValueString.authenticationSuccessful){
+          emit(InitializeConversationClientLoadedState(result: result));
+        }else {
+          emit(GenerateTokenErrorState(message: ValueString.errorGettingAccessToken));
+        }
+      } catch (e) {
+        emit(GenerateTokenErrorState(message: e.toString()));
+      }
+    });
+
+    on<CreateConversationEvent>((event, emit) async {
       emit(CreateConversionLoadingState());
       try {
         String result = await chatRepository.createConversation(

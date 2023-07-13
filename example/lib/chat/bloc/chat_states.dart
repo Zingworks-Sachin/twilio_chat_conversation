@@ -32,6 +32,28 @@ class GenerateTokenErrorState extends ChatStates {
   List<Object?> get props => throw UnimplementedError();
 }
 
+
+class InitializeConversationClientLoadingState extends ChatStates {
+  @override
+  List<Object?> get props => [];
+}
+
+class InitializeConversationClientLoadedState extends ChatStates {
+  final String result;
+  InitializeConversationClientLoadedState({required this.result});
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
+class InitializeConversationClientErrorState extends ChatStates {
+  final String message;
+  InitializeConversationClientErrorState({required this.message});
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 // CreateConversionLoadingState
 class CreateConversionLoadingState extends ChatStates {
   @override

@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: MediaQuery.of(context).size.width * 0.82,
                   bgColor: Colors.blueGrey,
                   borderColor: Colors.white,
-                  title: "Login",
+                  title: "Generate Token and Initialize Client",
                   titleFontSize: 14.0,
                   titleFontWeight: FontWeight.w600,
                   onPressed: () {
@@ -137,6 +137,19 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           if (state is GenerateTokenLoadedState) {
             ProgressBar.dismiss(context);
+            initializeConversationClient(accessToken:state.token);
+            //  ProgressBar.dismiss(context);
+          }
+          if (state is GenerateTokenErrorState) {
+            ProgressBar.dismiss(context);
+            ToastUtility.showToastAtCenter(state.message);
+          }
+
+          if (state is InitializeConversationClientLoadingState) {
+            ProgressBar.show(context);
+          }
+          if (state is InitializeConversationClientLoadedState) {
+            ProgressBar.dismiss(context);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -146,12 +159,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ChatScreen(identity: _userNameController.text)),
               ),
             );
-            //  ProgressBar.dismiss(context);
           }
-          if (state is GenerateTokenErrorState) {
+          if (state is InitializeConversationClientErrorState) {
             ProgressBar.dismiss(context);
             ToastUtility.showToastAtCenter(state.message);
           }
         }));
+  }
+
+  void initializeConversationClient({required String accessToken}) {
+    chatBloc!.add(InitializeConversationClientEvent(accessToken: accessToken));
   }
 }

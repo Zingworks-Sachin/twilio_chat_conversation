@@ -14,4 +14,6 @@ class Methods {
     static let getParticipants: String = "getParticipants"
     static let unSubscribeToMessageUpdate: String = "unSubscribeToMessageUpdate"
     static let subscribeToMessageUpdate: String = "subscribeToMessageUpdate"
+    static let initializeConversationClient: String = "initializeConversationClient"
+    static let updateAccessToken: String = "updateAccessToken"
 }

@@ -238,7 +238,6 @@ public class ConversationHandler {
             conversationMap.put("conversationName",conversationList.get(i).getFriendlyName());
             conversationMap.put("createdBy",conversationList.get(i).getCreatedBy());
             conversationMap.put("dateCreated",conversationList.get(i).getDateCreated());
-//            conversationMap.put("lastMessageDate",conversationList.get(i).getLastMessageDate().toString());
             conversationMap.put("uniqueName",conversationList.get(i).getUniqueName());
 
             if (conversationList.get(i).getFriendlyName() != null && !conversationList.get(i).getFriendlyName().trim().isEmpty()) {
@@ -281,7 +280,7 @@ public class ConversationHandler {
             }
         });
     }
-    public static void init(String accessToken, MethodChannel.Result result) {
+    public static void initializeConversationClient(String accessToken, MethodChannel.Result result) {
         ConversationsClient.Properties props = ConversationsClient.Properties.newBuilder().createProperties();
         ConversationsClient.create(flutterPluginBinding.getApplicationContext(), accessToken, props, new CallbackListener<ConversationsClient>() {
             @Override

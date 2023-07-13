@@ -66,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       builder: (BuildContext context) {
                         return DialogWithEditText(
                           onPressed: (enteredText) {
-                            chatBloc!.add(CreateConversionEvent(
+                            chatBloc!.add(CreateConversationEvent(
                                 conversationName: enteredText,
                                 identity: widget.identity));
                             Navigator.of(context).pop();

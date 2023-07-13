@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'twilio_chat_conversation_platform_interface.dart';
@@ -23,6 +22,7 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
   }
 
   /// Generate token and authenticate user (only for Android) #
+  @TargetPlatform.android
   @override
   Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity,required String serviceSid}) async {
     final accessToken = await methodChannel.invokeMethod<String>('generateToken',{
@@ -138,6 +138,24 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     //
     final  String? result = await methodChannel.invokeMethod('unSubscribeToMessageUpdate',{
       "conversationId":conversationId
+    });
+    return result ?? "";
+  }
+
+  @override
+  Future<String?> initializeConversationClient({required String accessToken}) async {
+    // TODO: implement initializeConversationClient
+    final  String? result = await methodChannel.invokeMethod('initializeConversationClient',{
+      "accessToken":accessToken
+    });
+    return result ?? "";
+  }
+
+  @override
+  Future<String?> updateAccessToken({required String accessToken}) async {
+    // TODO: implement updateAccessToken
+    final  String? result = await methodChannel.invokeMethod('updateAccessToken',{
+      "accessToken":accessToken
     });
     return result ?? "";
   }
