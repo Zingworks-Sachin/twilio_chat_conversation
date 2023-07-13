@@ -87,87 +87,89 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
     final chatProvider = Provider.of<ChatProvider>(context);
-    return Scaffold(
-        appBar: AppBar(
-          title:  Text(widget.conversationName),
+    return SafeArea(
+      child: Scaffold(
+          appBar: AppBar(
+            title:  Text(widget.conversationName),
+            backgroundColor: Colors.black,
+          ),
           backgroundColor: Colors.black,
-        ),
-        backgroundColor: Colors.black,
-        body: BlocConsumer<ChatBloc, ChatStates>(
-            builder: (BuildContext context, ChatStates state) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                      child: ListView.separated(
-                    controller: _controller,
-                    itemCount: allMessageList.length,
-                    reverse: true,
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final message = allMessageList[index];
-                      var isMe = (message['author'] == widget.identity &&
-                              message['attributes'] != "true")
-                          ? true
-                          : false;
+          body: BlocConsumer<ChatBloc, ChatStates>(
+              builder: (BuildContext context, ChatStates state) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                        child: ListView.separated(
+                      controller: _controller,
+                      itemCount: allMessageList.length,
+                      reverse: true,
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final message = allMessageList[index];
+                        var isMe = (message['author'] == widget.identity &&
+                                message['attributes'] != "true")
+                            ? true
+                            : false;
 
-                      return BubbleWidget(messageMap: message, isMe: isMe);
-                    },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Padding(padding: EdgeInsets.only(bottom: 4)),
-                  )),
-                  ChatTextWidget(
-                    hintText: "Type here..",
-                    msgController: msgController,
-                    haveValidation: true,
-                    onSend: (typeMessage) {
-                      List<String>? substrings = typeMessage.split(",");
-                      if (substrings[0].contains("ChatGPT")) {
-                        chatBloc!.add(SendMessageEvent(
-                            enteredMessage: typeMessage,
-                            conversationName: widget.conversationSid,
-                            isFromChatGpt: false));
-                        chatBloc!.add(SendMessageToChatGptEvent(
-                            modelsProvider: modelsProvider,
-                            chatProvider: chatProvider,
-                            typeMessage: typeMessage));
-                      } else {
-                        chatBloc!.add(SendMessageEvent(
-                            enteredMessage: typeMessage,
-                            conversationName: widget.conversationSid,
-                            isFromChatGpt: false));
-                      }
-                    },
-                  ),
-                ],
+                        return BubbleWidget(messageMap: message, isMe: isMe);
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Padding(padding: EdgeInsets.only(bottom: 4)),
+                    )),
+                    ChatTextWidget(
+                      hintText: "Type here..",
+                      msgController: msgController,
+                      haveValidation: true,
+                      onSend: (typeMessage) {
+                        List<String>? substrings = typeMessage.split(",");
+                        if (substrings[0].contains("ChatGPT")) {
+                          chatBloc!.add(SendMessageEvent(
+                              enteredMessage: typeMessage,
+                              conversationName: widget.conversationSid,
+                              isFromChatGpt: false));
+                          chatBloc!.add(SendMessageToChatGptEvent(
+                              modelsProvider: modelsProvider,
+                              chatProvider: chatProvider,
+                              typeMessage: typeMessage));
+                        } else {
+                          chatBloc!.add(SendMessageEvent(
+                              enteredMessage: typeMessage,
+                              conversationName: widget.conversationSid,
+                              isFromChatGpt: false));
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }, listener: (BuildContext context, ChatStates state) {
-          if (state is ReceiveMessageLoadedState) {
-            if (mounted){
-              setState(() {
-                allMessageList.addAll(state.messagesList);
-                allMessageList
-                    .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
-              });
+            );
+          }, listener: (BuildContext context, ChatStates state) {
+            if (state is ReceiveMessageLoadedState) {
+              if (mounted){
+                setState(() {
+                  allMessageList.addAll(state.messagesList);
+                  allMessageList
+                      .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
+                });
+              }
             }
-          }
-          if (state is SendMessageLoadedState) {
-            msgController.text = "";
-            chatBloc!.add(
-                ReceiveMessageEvent(conversationName: widget.conversationSid));
-          }
-          if (state is SendMessageToChatGptLoadedState) {
-            chatBloc!.add(SendMessageEvent(
-                enteredMessage: state.chatGptListList[0].msg,
-                conversationName: widget.conversationSid,
-                isFromChatGpt: true));
-          }
-        }));
+            if (state is SendMessageLoadedState) {
+              msgController.text = "";
+              chatBloc!.add(
+                  ReceiveMessageEvent(conversationName: widget.conversationSid));
+            }
+            if (state is SendMessageToChatGptLoadedState) {
+              chatBloc!.add(SendMessageEvent(
+                  enteredMessage: state.chatGptListList[0].msg,
+                  conversationName: widget.conversationSid,
+                  isFromChatGpt: true));
+            }
+          })),
+    );
   }
 }

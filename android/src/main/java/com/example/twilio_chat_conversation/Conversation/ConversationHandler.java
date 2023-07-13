@@ -30,14 +30,13 @@ public class ConversationHandler {
     private static MessageInterface messageInterface;
     private static AccessTokenInterface accessTokenInterface;
 
-
     /// Generate token and authenticate user #
     public static String generateAccessToken(String accountSid, String apiKey, String apiSecret, String identity, String serviceSid) {
         // Create an AccessToken builder
         AccessToken.Builder builder = new AccessToken.Builder(accountSid, apiKey, apiSecret);
         // Set the identity of the token
         builder.identity(identity);
-        builder.ttl(0);
+        builder.ttl(30);
 //        builder.ttl(3600);
         // Create a Chat grant and add it to the token
         ChatGrant chatGrant = new ChatGrant();
@@ -156,22 +155,22 @@ public class ConversationHandler {
                             messageMap.put("body",message.getBody());
                             messageMap.put("attributes",message.getAttributes().toString());
                             messageMap.put("dateCreated",message.getDateCreated());
-                            System.out.println("messageMap-"+message.getDateCreated());
+                            //System.out.println("messageMap-"+message.getDateCreated());
                             triggerEvent(messageMap);
                         }catch (Exception e){
-                            System.out.println("Exception-"+e.getMessage());
+                            //System.out.println("Exception-"+e.getMessage());
                         }
                     }
 
                     @Override
                     public void onMessageUpdated(Message message, Message.UpdateReason reason) {
-                        System.out.println("onMessageUpdated->"+message.toString());
-                        System.out.println("reason->"+reason.toString());
+                        //System.out.println("onMessageUpdated->"+message.toString());
+                        //System.out.println("reason->"+reason.toString());
                     }
 
                     @Override
                     public void onMessageDeleted(Message message) {
-                        System.out.println("onMessageDeleted->"+message.toString());
+                        //System.out.println("onMessageDeleted->"+message.toString());
                     }
 
                     @Override
@@ -197,7 +196,7 @@ public class ConversationHandler {
 
                     @Override
                     public void onSynchronizationChanged(Conversation conversation) {
-                        System.out.println("onSynchronizationChanged");
+                        //System.out.println("onSynchronizationChanged");
 
                     }
                 });
@@ -205,7 +204,7 @@ public class ConversationHandler {
 
             @Override
             public void onError(ErrorInfo errorInfo) {
-                System.out.println("client12-" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
+                //System.out.println("client12-" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
 
                 CallbackListener.super.onError(errorInfo);
             }
@@ -222,7 +221,7 @@ public class ConversationHandler {
 
             @Override
             public void onError(ErrorInfo errorInfo) {
-                System.out.println("client12-" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
+                //System.out.println("client12-" + errorInfo.getStatus()+"-"+errorInfo.getCode()+"-"+errorInfo.getMessage()+"-"+errorInfo.getDescription()+"-"+errorInfo.getReason());
                 CallbackListener.super.onError(errorInfo);
             }
         });
@@ -230,7 +229,7 @@ public class ConversationHandler {
     /// Get list of conversations for logged in user #
     public static List<Map<String, Object>> getConversationsList() {
         List<Conversation> conversationList = conversationClient.getMyConversations();
-        System.out.println(conversationList.size()+"");
+        //System.out.println(conversationList.size()+"");
         List<Map<String, Object>> list = new ArrayList<>();
         for (int i=0;i<conversationList.size();i++){
             // Map conversationMap = new HashMap<>();
@@ -246,7 +245,7 @@ public class ConversationHandler {
                 list.add(conversationMap);
             }
         }
-        System.out.println("list"+list);
+        //System.out.println("list"+list);
         return  list;
     }
     /// Get messages from the specific conversation #
@@ -272,7 +271,7 @@ public class ConversationHandler {
                     @Override
                     public void onError(ErrorInfo errorInfo) {
                         /// Error occurred while retrieving the messages
-                        System.out.println("Error retrieving messages: " + errorInfo.getMessage());
+                        //System.out.println("Error retrieving messages: " + errorInfo.getMessage());
                     }
                 });
             }
@@ -292,7 +291,7 @@ public class ConversationHandler {
 
                     @Override
                     public void onConversationAdded(Conversation conversation) {
-                        System.out.println("onConversationAdded");
+                        //System.out.println("onConversationAdded");
                     }
 
                     @Override
@@ -367,21 +366,27 @@ public class ConversationHandler {
 
                     @Override
                     public void onTokenExpired() {
-                        System.out.println("onTokenExpired");
-                        onTokenStatusChange("Access token expired");
+                        //System.out.println("onTokenExpired");
+                        Map<String, Object> tokenStatusMap = new HashMap<>();
+                        tokenStatusMap.put("statusCode",401);
+                        tokenStatusMap.put("message",Strings.accessTokenExpired);
+                        onTokenStatusChange(tokenStatusMap);
                     }
 
                     @Override
                     public void onTokenAboutToExpire() {
-                        System.out.println("onTokenAboutToExpire");
-                        onTokenStatusChange("Access token will expire");
+                        //System.out.println("onTokenAboutToExpire");
+                        Map<String, Object> tokenStatusMap = new HashMap<>();
+                        tokenStatusMap.put("statusCode",200);
+                        tokenStatusMap.put("message",Strings.accessTokenWillExpire);
+                        onTokenStatusChange(tokenStatusMap);
                     }
                 });
                 result.success(Strings.authenticationSuccessful);
             }
             @Override
             public void onError(ErrorInfo errorInfo) {
-                result.success("Authentication Failed");
+                result.success(Strings.authenticationFailed);
             }
         });
     }
@@ -392,9 +397,9 @@ public class ConversationHandler {
             public void onSuccess(Conversation conversation) {
                 List<Participant> participantList = conversation.getParticipantsList();
                 List<String> participants = new ArrayList<>();
-                for (int i=0;i<participantList.size();i++){
+                for (int i=0;i<participantList.size();i++) {
                     participants.add(participantList.get(i).getIdentity());
-                    System.out.println("getParticipants->" + participants);
+                    //System.out.println("getParticipants->" + participants);
                 }
                 result.success(participants);
             }
@@ -418,9 +423,9 @@ public class ConversationHandler {
             messageInterface.onMessageUpdate(message);
         }
     }
-    public static void onTokenStatusChange(String status) {
+    public static void onTokenStatusChange(Map status) {
         // Pass the result through the messageInterface
-        System.out.println("accessTokenInterface->" + accessTokenInterface.toString());
+        //System.out.println("accessTokenInterface->" + accessTokenInterface.toString());
         if (accessTokenInterface != null) {
             accessTokenInterface.onTokenStatusChange(status);
         }

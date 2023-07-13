@@ -125,7 +125,7 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
   }
 
   @Override
-  public void onTokenStatusChange(String message) {
+  public void onTokenStatusChange(Map message) {
     /// Pass the message result back to the Flutter side
     if (this.tokenEventSink != null) {
       this.tokenEventSink.success(message);

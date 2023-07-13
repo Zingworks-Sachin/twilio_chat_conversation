@@ -19,4 +19,11 @@ class Strings {
     
     /// Used when authentication is unsuccessful
     static let authenticationFailed: String = "Authentication Failed"
+    
+    /// Used when twilio access token is about to expire
+    static let accessTokenWillExpire: String = "Access token will expire"
+    
+    /// Used when twilio access token is expired
+    static let accessTokenExpired: String = "Access token expired"
+    
 }

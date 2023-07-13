@@ -1,32 +1,17 @@
 import UIKit
 import TwilioConversationsClient
+import Flutter
 
 class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
-
+    
+    
+    
     // MARK: Conversations variables
     private var client: TwilioConversationsClient?
     weak var conversationDelegate: ConversationDelegate?
-    weak var tokenDelegate:TokenDelegate?
+//    weak var tokenDelegate:TokenDelegate?
     public var messageSubscriptionId: String = ""
-
-//    func conversationsClient(_ client: TwilioConversationsClient, synchronizationStatusUpdated status: TCHClientSynchronizationStatus) {
-//        guard status == .completed else {
-//            return
-//        }
-//
-//        checkConversationCreation { (_, conversation) in
-//           if let conversation = conversation {
-//               self.joinConversation(conversation)
-//           } else {
-//               self.createConversation(uniqueConversationName:conversation?.uniqueName ?? self.uniqueConversationName) { (success, conversation) in
-//                   if success, let conversation = conversation {
-//                       self.joinConversation(conversation)
-//                   }
-//               }
-//           }
-//        }
-//    }
-
+    var tokenEventSink: FlutterEventSink?
 
     // Called whenever a conversation we've joined receives a new message
     func conversationsClient(_ client: TwilioConversationsClient, conversation: TCHConversation,
@@ -42,38 +27,23 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     }
     
     func conversationsClientTokenWillExpire(_ client: TwilioConversationsClient) {
-        print("Access token will expire.")
-        let twilioChatConversationPlugin = TwilioChatConversationPlugin()
-        self.tokenDelegate = twilioChatConversationPlugin.self
-        self.tokenDelegate?.onTokenStatusChange(status: "Access token will expire")
-        refreshAccessToken()
+        print("Access token will expire.->\(String(describing: tokenEventSink))")
+        var tokenStatusMap: [String: Any] = [:]
+        tokenStatusMap["statusCode"] = 200
+        tokenStatusMap["message"] = Strings.accessTokenWillExpire
+        tokenEventSink?(tokenStatusMap)
     }
     
     func conversationsClientTokenExpired(_ client: TwilioConversationsClient) {
-        print("Access token expired.\(client.connectionState)")
-//        self.tokenDelegate?.onTokenStatusChange(status: "Access token expired")
-//        refreshAccessToken()
+        print("Access token expired.\(String(describing: tokenEventSink))")
+        var tokenStatusMap: [String: Any] = [:]
+        tokenStatusMap["statusCode"] = 401
+        tokenStatusMap["message"] = Strings.accessTokenExpired
+        tokenEventSink?(tokenStatusMap)
     }
     
-    private func refreshAccessToken() {
-//        guard let identity = identity else {
-//            return
-//        }
-//        let urlString = "\(TOKEN_URL)?identity=\(identity)"
-//
-//        TokenUtils.retrieveToken(url: urlString) { (token, _, error) in
-//            guard let token = token else {
-//               print("Error retrieving token: \(error.debugDescription)")
-//               return
-//           }
-//            self.client?.updateToken(token, completion: { (result) in
-//                if (result.isSuccessful) {
-//                    print("Access token refreshed")
-//                } else {
-//                    print("Unable to refresh access token")
-//                }
-//            })
-//        }
+    private func updateAccessToken(accessToken:String) {
+
     }
 
     func sendMessage(conversationId:String, messageText: String,

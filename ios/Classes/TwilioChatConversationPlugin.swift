@@ -12,8 +12,8 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
     
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events
-        self.tokenEventSink = events
-        print("Event occurred->\(String(describing: arguments))")
+        self.conversationsHandler.tokenEventSink = events
+        print("Event occurred->\(String(describing: self.tokenEventSink))")
         return nil
     }
     
@@ -34,8 +34,6 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
       
     tokenEventChannel.setStreamHandler(instance)
     messageEventChannel.setStreamHandler(instance)
-      
-      
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -46,7 +44,7 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
       
       switch call.method {
       case Methods.generateToken:
-          TwilioApi.requestTwilioAccessToken(identity:arguments?["identity"] as! String) { [self] apiResult in
+          TwilioApi.requestTwilioAccessToken(identity:arguments?["identity"] as! String) { apiResult in
               switch apiResult {
               case .success(let accessToken):
                   self.conversationsHandler.loginWithAccessToken(accessToken) { loginResult in
@@ -54,11 +52,6 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
                           return
                       }
                       if(loginResultSuccessful) {
-                          
-                          DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
-                              // Put your code which should be executed with a delay here
-                              self.conversationsHandler.tokenDelegate = self
-                          }
                           result(Strings.authenticationSuccessful)
                       }else {
                           result(Strings.authenticationFailed)
@@ -141,8 +134,9 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
       case Methods.getMessages:
           self.conversationsHandler.getConversationFromId(conversationId: arguments?["conversationId"] as! String) { conversation in
               if let conversationFromId = conversation {
-                  self.conversationsHandler.loadPreviousMessages(conversationFromId) { listOfMessagess in
-                      result(listOfMessagess)
+                  self.conversationsHandler.loadPreviousMessages(conversationFromId) { listOfMessages in
+//                      print("listOfMessagess->\(String(describing: listOfMessages))")
+                      result(listOfMessages)
                   }
               }
           }
@@ -184,12 +178,5 @@ extension TwilioChatConversationPlugin : ConversationDelegate {
                 self.eventSink?(message)
             }
         }
-    }
-}
-
-extension TwilioChatConversationPlugin : TokenDelegate {
-    func onTokenStatusChange(status: String) {
-        print("ConversationDelegate onTokenStatusChange->\(status)--tokenEventSink->\(String(describing: self.tokenEventSink))")
-        self.tokenEventSink?(status)
     }
 }

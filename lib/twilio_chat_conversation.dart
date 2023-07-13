@@ -6,13 +6,9 @@ class TwilioChatConversation {
 
   static const EventChannel _messageEventChannel = EventChannel('twilio_chat_conversation/onMessageUpdated');
   static const EventChannel _tokenEventChannel = EventChannel('twilio_chat_conversation/onTokenStatusChange');
-
   static final StreamController<Map> _messageUpdateController = StreamController<Map>.broadcast();
-  static final StreamController<String> _tokenStatusController = StreamController<String>.broadcast();
-
-
+  static final StreamController<Map> _tokenStatusController = StreamController<Map>.broadcast();
   Stream<Map> get onMessageReceived => _messageUpdateController.stream;
-  Stream<String> get onTokenStatusChange => _tokenStatusController.stream;
 
   Future<String?> getPlatformVersion() {
     return TwilioChatConversationPlatform.instance.getPlatformVersion();
@@ -57,7 +53,10 @@ class TwilioChatConversation {
   void subscribeToMessageUpdate({required String conversationSid}) async  {
      TwilioChatConversationPlatform.instance.subscribeToMessageUpdate(conversationId: conversationSid);
      _messageEventChannel.receiveBroadcastStream(conversationSid).listen((dynamic message) {
-       _messageUpdateController.add(message);
+       print("subscribeToMessageUpdate->$message");
+       if (message.runtimeType == Map){
+         _messageUpdateController.add(message);
+       }
      });
   }
 
@@ -66,7 +65,14 @@ class TwilioChatConversation {
      // _messageUpdateController.close();
      // _messageUpdateController = StreamController<Map>();
   }
-  Stream<String> get onTokenStatusChanges {
+
+  void updateAccessToken ({required String token}) {
+    TwilioChatConversationPlatform.instance.unSubscribeToMessageUpdate(conversationId: "");
+    // _messageUpdateController.close();
+    // _messageUpdateController = StreamController<Map>();
+  }
+
+  Stream<Map> get onTokenStatusChange {
     _tokenEventChannel.receiveBroadcastStream().listen((dynamic tokenStatus) {
       print("tokenStatus->$tokenStatus");
       _tokenStatusController.add(tokenStatus);
