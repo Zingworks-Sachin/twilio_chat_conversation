@@ -5,6 +5,7 @@ import 'package:twilio_chat_conversation_example/chat/bloc/chat_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
 import 'package:twilio_chat_conversation_example/chat/common/progress_bar.dart';
+import 'package:twilio_chat_conversation_example/chat/common/shared_preference.dart';
 import 'package:twilio_chat_conversation_example/chat/common/toast_utility.dart';
 import 'package:twilio_chat_conversation_example/chat/common/widgets/common_text_button_widget.dart';
 import 'package:twilio_chat_conversation_example/chat/common/widgets/common_textfield.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String? identity;
   final TextEditingController _userNameController = TextEditingController();
+  SharedPreference sharedPreference = SharedPreference();
 
   @override
   void initState() {
@@ -150,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           if (state is InitializeConversationClientLoadedState) {
             ProgressBar.dismiss(context);
+            SharedPreference.setIdentity(identity: _userNameController.text);
             Navigator.push(
               context,
               MaterialPageRoute(

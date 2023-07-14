@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   listenToAccessTokenStatus(){
     chatBloc = BlocProvider.of<ChatBloc>(context);
     twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
-      print("tokenData->$tokenData");
+      /// update token if your access token is about to expire
       if (tokenData["statusCode"] == 401){
         chatBloc?.add(UpdateTokenEvent());
       }

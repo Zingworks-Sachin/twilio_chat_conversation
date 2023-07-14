@@ -57,9 +57,10 @@ class TwilioChatConversation {
   void subscribeToMessageUpdate({required String conversationSid}) async  {
      TwilioChatConversationPlatform.instance.subscribeToMessageUpdate(conversationId: conversationSid);
      _messageEventChannel.receiveBroadcastStream(conversationSid).listen((dynamic message) {
-       print("subscribeToMessageUpdate->$message");
-       if (message.runtimeType == Map){
-         _messageUpdateController.add(message);
+       if (message != null){
+         if (message["author"] != null && message["body"] != null){
+           _messageUpdateController.add(message);
+         }
        }
      });
   }
@@ -75,7 +76,6 @@ class TwilioChatConversation {
 
   Stream<Map> get onTokenStatusChange {
     _tokenEventChannel.receiveBroadcastStream().listen((dynamic tokenStatus) {
-      print("tokenStatus->$tokenStatus");
       _tokenStatusController.add(tokenStatus);
     });
     return _tokenStatusController.stream;

@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import Foundation
 
-public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStreamHandler {
+public class TwilioChatConversationPlugin: NSObject,FlutterPlugin,FlutterStreamHandler {
     var conversationsHandler = ConversationsHandler()
     var eventSink: FlutterEventSink?
     var tokenEventSink: FlutterEventSink?
@@ -27,9 +27,8 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
       
     let instance = TwilioChatConversationPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
-      
-    tokenEventChannel.setStreamHandler(instance)
     messageEventChannel.setStreamHandler(instance)
+    tokenEventChannel.setStreamHandler(instance)
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -176,6 +175,7 @@ extension TwilioChatConversationPlugin : ConversationDelegate {
     func onMessageUpdate(message: [String : Any], messageSubscriptionId: String) {
         if let conversationId = message["conversationId"] as? String,let message = message["message"] as? [String:Any] {
             if (messageSubscriptionId == conversationId) {
+                print("onMessageUpdate called")
                 self.eventSink?(message)
             }
         }

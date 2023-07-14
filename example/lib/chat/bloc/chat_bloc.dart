@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
 import 'package:twilio_chat_conversation_example/chat/common/models/chat_model.dart';
+import 'package:twilio_chat_conversation_example/chat/common/shared_preference.dart';
 import 'package:twilio_chat_conversation_example/chat/common/value_string.dart';
 import 'package:twilio_chat_conversation_example/chat/repository/chat_repository.dart';
 
@@ -15,6 +16,8 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
       emit(GenerateTokenLoadingState());
       try {
         String result = "";
+
+        /// For android you can either use generateToken of the plugin or get token from server
         if (Platform.isAndroid){
           result = await chatRepository.generateToken(event.credentials);
         }else {
@@ -32,8 +35,9 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
     on<UpdateTokenEvent>((event, emit) async {
       emit(UpdateTokenLoadingState());
       try {
+        String identity =  await SharedPreference.getIdentity();
         String accessToken = await chatRepository.getAccessTokenFromServer({
-          "identity":"Rohan"
+          "identity": identity
         });
         Map tokenStatus = await chatRepository.updateAccessToken(accessToken);
         emit(UpdateTokenLoadedState(tokenStatus: tokenStatus));

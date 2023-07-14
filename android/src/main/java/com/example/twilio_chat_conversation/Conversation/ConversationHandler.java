@@ -36,8 +36,8 @@ public class ConversationHandler {
         AccessToken.Builder builder = new AccessToken.Builder(accountSid, apiKey, apiSecret);
         // Set the identity of the token
         builder.identity(identity);
-        builder.ttl(0);
-//        builder.ttl(3600);
+//        builder.ttl(0);
+        builder.ttl(3600);
         // Create a Chat grant and add it to the token
         ChatGrant chatGrant = new ChatGrant();
         chatGrant.setServiceSid(serviceSid);
