@@ -9,12 +9,6 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
   @visibleForTesting
   final methodChannel = const MethodChannel('twilio_chat_conversation');
 
-// Define a stream controller for event channel events
-  final StreamController<dynamic> _eventStreamController = StreamController<dynamic>.broadcast();
-
-// Expose the event stream to the Flutter app
-  Stream<dynamic> get eventStream => _eventStreamController.stream;
-
   @override
   Future<String?> getPlatformVersion() async {
     final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
@@ -108,19 +102,6 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
     });
     return participantsList ?? [];
   }
-
-  // @override
-  // Future<Stream> onMessageUpdated({required Map message}) async {
-  //   // Set up the event channel listener
-  //   _eventChannel.receiveBroadcastStream().listen((event) {
-  //     // Add the received event to the stream controller
-  //     print("onMessageUpdated->${event.toString()}");
-  //     print("onMessageUpdated message->${event.toString()}");
-  //     _eventStreamController.add(event);
-  //   });
-  //   return eventStream;
-  // }
-
 
 @override
   Future<String> subscribeToMessageUpdate({required String conversationId}) async {

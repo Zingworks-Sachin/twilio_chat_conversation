@@ -1,3 +1,6 @@
+## 1.0.3
+* Bug fixes
+
 ## 1.0.2
 * Added support for iOS platform
 * Listen to newly added message in a conversation and token expiration
