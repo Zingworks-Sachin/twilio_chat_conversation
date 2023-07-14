@@ -103,7 +103,7 @@ twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.
 ```dart
 twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
 if (tokenData["statusCode"] == 401){
-  generateAndUpdateAccessToken()
+     generateAndUpdateAccessToken()
    }
 });
 ```
