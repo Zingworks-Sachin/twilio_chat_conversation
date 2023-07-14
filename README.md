@@ -100,7 +100,6 @@ twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.
 ### Listen to access token expiration
 ```dart
 twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
-/// update token if your access token is expired or about to expire
 if (tokenData["statusCode"] == 401){
   generateAndUpdateAccessToken()
 }
@@ -108,6 +107,7 @@ if (tokenData["statusCode"] == 401){
 ```
 ### Update access token
 ```dart
+/// update token if your access token is expired or about to expire
 final Map? result = await twilioChatConversationPlugin.updateAccessToken(accessToken:accessToken);
 ```
 
