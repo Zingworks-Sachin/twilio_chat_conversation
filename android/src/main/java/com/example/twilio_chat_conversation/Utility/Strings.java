@@ -6,7 +6,7 @@ public class Strings {
     /// Used when there is an error while creating a conversation
     public final static String createConversationFailure = "Error while creating conversation.";
     /// Used when conversation with provided name already exists
-    public final static  String conversationExists = "Conversation with provided name already exists";
+    public final static  String conversationExists = "Conversation with provided unique name already exists";
     /// Used when participant is added to a conversation successfully
     public final static String addParticipantSuccess = "Participant added successfully.";
     /// Used when there is an error while adding a participant to a conversation
@@ -17,4 +17,7 @@ public class Strings {
     public final static  String accessTokenWillExpire = "Access token will expire";
     /// Used when twilio access token is expired
     public final static  String accessTokenExpired = "Access token expired";
+    /// Used when twilio access token is refreshed
+    public final static  String accessTokenRefreshed = "Access token refreshed";
+
 }

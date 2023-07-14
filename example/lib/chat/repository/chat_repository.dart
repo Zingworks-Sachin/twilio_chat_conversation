@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:twilio_chat_conversation/twilio_chat_conversation.dart';
 import 'package:twilio_chat_conversation_example/chat/common/api/api_provider.dart';
@@ -8,6 +7,7 @@ import 'package:twilio_chat_conversation_example/chat/common/models/chat_model.d
 abstract class ChatRepository {
   Future<String> initializeConversationClient(String accessToken);
   Future<String> generateToken(credentials);
+  Future<Map> updateAccessToken(String accessToken);
   Future<String> getAccessTokenFromServer(credentials);
   Future<String> createConversation(conversationName, identity);
   Future<String> joinConversation(conversationId);
@@ -195,5 +195,17 @@ class ChatRepositoryImpl implements ChatRepository {
     }else {
       return response[""];
     }
+  }
+
+  @override
+  Future<Map> updateAccessToken(String accessToken) async {
+    Map? response;
+    try {
+      final Map? result = await twilioChatConversationPlugin.updateAccessToken(accessToken:accessToken);
+      response = result;
+    } on PlatformException catch (e) {
+      response = {};
+    }
+    return response ?? {};
   }
 }

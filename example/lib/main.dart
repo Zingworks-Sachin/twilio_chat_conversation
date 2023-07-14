@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:twilio_chat_conversation/twilio_chat_conversation.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_bloc.dart';
+import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/common/providers/chats_provider.dart';
 import 'package:twilio_chat_conversation_example/chat/common/providers/models_provider.dart';
 import 'package:twilio_chat_conversation_example/chat/repository/chat_repository.dart';
@@ -11,12 +12,11 @@ import 'package:twilio_chat_conversation_example/chat/screens/home_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final twilioChatConversationPlugin = TwilioChatConversation();
-  runApp(StreamBuilder<Map>(
-    stream: twilioChatConversationPlugin.onTokenStatusChange,
-    builder: (context, snapshot) {
-      return const MyHomePage(title: 'Twilio Plugin',);
-    }
+  runApp( BlocProvider(
+    create: (context) => ChatBloc(
+      chatRepository: ChatRepositoryImpl(),
+    ),
+    child: const MyHomePage(title: 'Twilio Plugin',),
   ));
 }
 
@@ -31,10 +31,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String platformVersion = 'Unknown';
+  TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
+  ChatBloc? chatBloc;
 
   @override
   void initState() {
     super.initState();
+    listenToAccessTokenStatus();
+  }
+  listenToAccessTokenStatus(){
+    chatBloc = BlocProvider.of<ChatBloc>(context);
+    twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
+      print("tokenData->$tokenData");
+      if (tokenData["statusCode"] == 401){
+        chatBloc?.add(UpdateTokenEvent());
+      }
+    });
   }
 
   @override
@@ -57,7 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
           create: (context) => ChatBloc(
             chatRepository: ChatRepositoryImpl(),
           ),
-          child: HomeScreen(platformVersion: platformVersion,),
+          child: StreamBuilder<Map>(
+              stream: TwilioChatConversation().onTokenStatusChange,
+            builder: (context, snapshot) {
+              return HomeScreen(platformVersion: platformVersion,);
+            }
+          ),
         ),
       ),
     );

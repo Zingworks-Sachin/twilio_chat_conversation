@@ -36,6 +36,7 @@ dependencies:
   bubble: ^1.2.1
   intl: ^0.18.1
   flutter_svg: ^1.1.6
+  shared_preferences: ^2.2.0
 
 
 dev_dependencies:

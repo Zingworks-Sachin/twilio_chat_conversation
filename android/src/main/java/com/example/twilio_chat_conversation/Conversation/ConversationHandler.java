@@ -36,7 +36,7 @@ public class ConversationHandler {
         AccessToken.Builder builder = new AccessToken.Builder(accountSid, apiKey, apiSecret);
         // Set the identity of the token
         builder.identity(identity);
-        builder.ttl(30);
+        builder.ttl(0);
 //        builder.ttl(3600);
         // Create a Chat grant and add it to the token
         ChatGrant chatGrant = new ChatGrant();
@@ -56,7 +56,7 @@ public class ConversationHandler {
             }
             @Override
             public void onError(ErrorInfo errorInfo) {
-                if (errorInfo.getMessage().equals("Conversation with provided unique name already exists")){
+                if (errorInfo.getMessage().equals(Strings.conversationExists)){
                     result.success(Strings.conversationExists);
                 }else {
                     result.success(Strings.createConversationFailure);
@@ -365,7 +365,7 @@ public class ConversationHandler {
 
                     @Override
                     public void onTokenExpired() {
-                        //System.out.println("onTokenExpired");
+                        System.out.println("onTokenExpired");
                         Map<String, Object> tokenStatusMap = new HashMap<>();
                         tokenStatusMap.put("statusCode",401);
                         tokenStatusMap.put("message",Strings.accessTokenExpired);
@@ -410,6 +410,28 @@ public class ConversationHandler {
             }
         });
     }
+
+    public static void updateAccessToken(String accessToken, MethodChannel.Result result) {
+        Map<String, Object> tokenStatus = new HashMap<>();
+        conversationClient.updateToken(accessToken ,new StatusListener() {
+            @Override
+            public void onSuccess() {
+                System.out.println("Refreshed access token.");
+                tokenStatus.put("statusCode",200);
+                tokenStatus.put("message",Strings.accessTokenRefreshed);
+                result.success(tokenStatus);
+            }
+
+            @Override
+            public void onError(ErrorInfo errorInfo) {
+                StatusListener.super.onError(errorInfo);
+                tokenStatus.put("statusCode",500);
+                tokenStatus.put("message",errorInfo.getMessage());
+                result.success(tokenStatus);
+            }
+        });
+    }
+
     public void setListener(MessageInterface listener) {
         ConversationHandler.messageInterface = listener;
     }

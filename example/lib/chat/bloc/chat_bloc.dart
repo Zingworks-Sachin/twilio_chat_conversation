@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
@@ -7,10 +6,8 @@ import 'package:twilio_chat_conversation_example/chat/common/models/chat_model.d
 import 'package:twilio_chat_conversation_example/chat/common/value_string.dart';
 import 'package:twilio_chat_conversation_example/chat/repository/chat_repository.dart';
 
-
 class ChatBloc extends Bloc<ChatEvents, ChatStates> {
   ChatRepository chatRepository;
-
   ChatStates get initialState => ChatInitialState();
 
   ChatBloc({required this.chatRepository}) : super(ChatInitialState()) {
@@ -32,12 +29,22 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(GenerateTokenErrorState(message: e.toString()));
       }
     });
-
+    on<UpdateTokenEvent>((event, emit) async {
+      emit(UpdateTokenLoadingState());
+      try {
+        String accessToken = await chatRepository.getAccessTokenFromServer({
+          "identity":"Rohan"
+        });
+        Map tokenStatus = await chatRepository.updateAccessToken(accessToken);
+        emit(UpdateTokenLoadedState(tokenStatus: tokenStatus));
+      } catch (e) {
+        emit(GenerateTokenErrorState(message: e.toString()));
+      }
+    });
     on<InitializeConversationClientEvent>((event, emit) async {
       emit(InitializeConversationClientLoadingState());
       try {
         String result = await chatRepository.initializeConversationClient(event.accessToken);
-        print("InitializeConversationClientEvent->$result");
         if (result == ValueString.authenticationSuccessful){
           emit(InitializeConversationClientLoadedState(result: result));
         }else {
@@ -47,7 +54,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(GenerateTokenErrorState(message: e.toString()));
       }
     });
-
     on<CreateConversationEvent>((event, emit) async {
       emit(CreateConversionLoadingState());
       try {
@@ -58,7 +64,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(CreateConversionErrorState(message: e.toString()));
       }
     });
-
     on<SeeMyConversationsEvent>((event, emit) async {
       emit(SeeMyConversationsLoadingState());
       try {
@@ -68,18 +73,16 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(CreateConversionErrorState(message: e.toString()));
       }
     });
-
     on<JoinConversionEvent>((event, emit) async {
       emit(JoinConversionLoadingState());
       try {
         String result =
-            await chatRepository.joinConversation(event.conversationId);
+        await chatRepository.joinConversation(event.conversationId);
         emit(JoinConversionLoadedState(result: result, conversationName: event.conversationName));
       } catch (e) {
         emit(JoinConversionErrorState(message: e.toString()));
       }
     });
-
     on<SendMessageEvent>((event, emit) async {
       emit(SendMessageLoadingState());
       try {
@@ -90,7 +93,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(SendMessageErrorState(message: e.toString()));
       }
     });
-
     on<AddParticipantEvent>((event, emit) async {
       emit(AddParticipantLoadingState());
       try {
@@ -101,7 +103,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(AddParticipantErrorState(message: e.toString()));
       }
     });
-
     on<ReceiveMessageEvent>((event, emit) async {
       emit(ReceiveMessageLoadingState());
       try {
@@ -112,7 +113,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(ReceiveMessageErrorState(message: e.toString()));
       }
     });
-
     on<SendMessageToChatGptEvent>((event, emit) async {
       emit(SendMessageToChatGptLoadingState());
       try {
@@ -124,17 +124,14 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
         emit(SendMessageToChatGptErrorState(message: e.toString()));
       }
     });
-
     on<GetParticipantsEvent>((event, emit) async {
-    emit(GetParticipantsLoadingState());
-    try {
-    List result = await chatRepository.getParticipants(event.conversationId);
-    //print("GetParticipants result->$result");
-
-    emit(GetParticipantsLoadedState(participantsList: result));
-    } catch (e) {
-    emit(GetParticipantsErrorState(message: e.toString()));
-    }
+      emit(GetParticipantsLoadingState());
+      try {
+        List result = await chatRepository.getParticipants(event.conversationId);
+        emit(GetParticipantsLoadedState(participantsList: result));
+      } catch (e) {
+        emit(GetParticipantsErrorState(message: e.toString()));
+      }
     });
   }
 }

@@ -12,6 +12,13 @@ class GenerateTokenEvent extends ChatEvents {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class UpdateTokenEvent extends ChatEvents {
+  UpdateTokenEvent();
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 class InitializeConversationClientEvent extends ChatEvents {
   final String accessToken;
   InitializeConversationClientEvent({required this.accessToken});

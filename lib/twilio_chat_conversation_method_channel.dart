@@ -152,11 +152,11 @@ class MethodChannelTwilioChatConversation extends TwilioChatConversationPlatform
   }
 
   @override
-  Future<String?> updateAccessToken({required String accessToken}) async {
+  Future<Map?> updateAccessToken({required String accessToken}) async {
     // TODO: implement updateAccessToken
-    final  String? result = await methodChannel.invokeMethod('updateAccessToken',{
+    final  Map? result = await methodChannel.invokeMethod('updateAccessToken',{
       "accessToken":accessToken
     });
-    return result ?? "";
+    return result ?? {};
   }
 }

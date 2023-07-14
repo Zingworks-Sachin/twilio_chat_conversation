@@ -6,6 +6,7 @@ import 'package:twilio_chat_conversation/twilio_chat_conversation.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
+import 'package:twilio_chat_conversation_example/chat/common/progress_bar.dart';
 import 'package:twilio_chat_conversation_example/chat/common/providers/chats_provider.dart';
 import 'package:twilio_chat_conversation_example/chat/common/providers/models_provider.dart';
 import 'package:twilio_chat_conversation_example/chat/common/widgets/bubble_widget.dart';
@@ -149,7 +150,11 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
               ),
             );
           }, listener: (BuildContext context, ChatStates state) {
+            if (state is ReceiveMessageLoadingState) {
+              ProgressBar.show(context);
+            }
             if (state is ReceiveMessageLoadedState) {
+              ProgressBar.dismiss(context);
               if (mounted){
                 setState(() {
                   allMessageList.addAll(state.messagesList);
@@ -157,6 +162,9 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                       .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
                 });
               }
+            }
+            if (state is ReceiveMessageErrorState) {
+              ProgressBar.dismiss(context);
             }
             if (state is SendMessageLoadedState) {
               msgController.text = "";

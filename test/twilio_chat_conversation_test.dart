@@ -84,7 +84,7 @@ class MockTwilioChatConversationPlatform
   }
 
   @override
-  Future<String?> updateAccessToken({required String accessToken}) {
+  Future<Map?> updateAccessToken({required String accessToken}) {
     // TODO: implement updateAccessToken
     throw UnimplementedError();
   }

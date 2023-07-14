@@ -68,9 +68,10 @@ class TwilioChatConversation {
      TwilioChatConversationPlatform.instance.unSubscribeToMessageUpdate(conversationId: conversationSid);
   }
 
-  void updateAccessToken ({required String accessToken}) {
-    TwilioChatConversationPlatform.instance.updateAccessToken(accessToken: accessToken);
+  Future<Map?> updateAccessToken ({required String accessToken}) {
+   return TwilioChatConversationPlatform.instance.updateAccessToken(accessToken: accessToken);
   }
+
 
   Stream<Map> get onTokenStatusChange {
     _tokenEventChannel.receiveBroadcastStream().listen((dynamic tokenStatus) {

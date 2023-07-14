@@ -9,7 +9,7 @@ class Strings {
     static let createConversationFailure: String = "Error while creating conversation."
     
     /// Used when conversation with provided name already exists
-    static let conversationExists: String = "Conversation with provided name already exists"
+    static let conversationExists: String = "Conversation with provided unique name already exists"
     
     /// Used when participant is added to a conversation successfully
     static let addParticipantSuccess: String = "Participant added successfully."
@@ -26,4 +26,6 @@ class Strings {
     /// Used when twilio access token is expired
     static let accessTokenExpired: String = "Access token expired"
     
+    /// Used when twilio access token is refreshed
+    static let accessTokenRefreshed: String = "Access token refreshed"
 }

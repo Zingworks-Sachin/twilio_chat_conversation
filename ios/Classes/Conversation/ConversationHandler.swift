@@ -42,8 +42,10 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
         tokenEventSink?(tokenStatusMap)
     }
     
-    private func updateAccessToken(accessToken:String) {
-
+    public func updateAccessToken(accessToken:String,completion: @escaping (TCHResult?) -> Void) {
+        self.client?.updateToken(accessToken, completion: { tchResult in
+            completion(tchResult)
+        })
     }
 
     func sendMessage(conversationId:String, messageText: String,

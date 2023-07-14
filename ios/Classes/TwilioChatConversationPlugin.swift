@@ -3,22 +3,18 @@ import UIKit
 import Foundation
 
 public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStreamHandler {
-    
     var conversationsHandler = ConversationsHandler()
     var eventSink: FlutterEventSink?
     var tokenEventSink: FlutterEventSink?
     private var conversationsHandlers: ConversationsHandler?
-
     
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events
         self.conversationsHandler.tokenEventSink = events
-        print("Event occurred->\(String(describing: self.tokenEventSink))")
         return nil
     }
     
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        print("onCancel called->\(arguments ?? "")")
         self.eventSink = nil
         self.tokenEventSink = nil
         return nil
@@ -37,11 +33,10 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-      
       let arguments = call.arguments as? [String:Any]
-      print("call->\(String(describing: call.method))")
-      print("arguments->\(String(describing: arguments))")
-      
+//      print("call->\(String(describing: call.method))")
+//      print("arguments->\(String(describing: arguments))")
+
       switch call.method {
       case Methods.generateToken:
           TwilioApi.requestTwilioAccessToken(identity:arguments?["identity"] as! String) { apiResult in
@@ -54,12 +49,25 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
               }
           }
           break
-          
+      case Methods.updateAccessToken:
+          self.conversationsHandler.updateAccessToken(accessToken: arguments?["accessToken"] as! String) { tchResult in
+              print("Methods.updateAccessToken->\(String(describing: tchResult))")
+              var tokenStatus: [String: Any] = [:]
+              if let tokenUpdateResult = tchResult {
+                  if (tokenUpdateResult.resultCode == 200){
+                      tokenStatus["statusCode"] = tokenUpdateResult.resultCode
+                      tokenStatus["message"] = Strings.accessTokenRefreshed
+                  }else {
+                      tokenStatus["statusCode"] = tokenUpdateResult.resultCode
+                      tokenStatus["message"] = tokenUpdateResult.resultText
+                  }
+              }
+              result(tokenStatus)
+          }
+          break
       case Methods.initializeConversationClient:
           self.conversationsHandler.loginWithAccessToken(arguments?["accessToken"] as! String) { loginResult in
-              guard let loginResultSuccessful: Bool = loginResult?.isSuccessful else {
-                  return
-              }
+              guard let loginResultSuccessful: Bool = loginResult?.isSuccessful else {return}
               if(loginResultSuccessful) {
                   result(Strings.authenticationSuccessful)
               }else {
@@ -70,12 +78,10 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
       case Methods.createConversation:
           self.conversationsHandler.createConversation (uniqueConversationName: arguments?["conversationName"] as! String){ (success, conversation,status)  in
               if success, let conversation = conversation {
-                  self.conversationsHandler.joinConversation(conversation) { joinConversationStatus in
-                      
-                  }
+                  self.conversationsHandler.joinConversation(conversation) { joinConversationStatus in}
                   result(Strings.createConversationSuccess)
               }else {
-                  if (status == "Conversation with provided unique name already exists") {
+                  if (status == Strings.conversationExists) {
                       result(Strings.conversationExists)
                   } else {
                       result(Strings.createConversationFailure)
@@ -83,7 +89,6 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
               }
           }
           break
-          
       case Methods.getConversations:
           self.conversationsHandler.getConversations { conversationList in
               var listOfConversations: [[String: Any]] = []
@@ -102,7 +107,6 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
               result(listOfConversations)
           }
           break
-          
       case Methods.getParticipants:
           var listOfParticipants: [String] = []
           self.conversationsHandler.getParticipants(conversationId: arguments?["conversationId"] as! String) { participantsList in
@@ -114,7 +118,6 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
               result(listOfParticipants)
           }
           break
-          
       case Methods.addParticipant:
           self.conversationsHandler.addParticipants(conversationId: arguments?["conversationId"] as! String, participantName: arguments?["participantName"] as! String) { status in
               if let addParticipantStatus = status {
@@ -125,7 +128,6 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
                   }
               }
           }
-          
       case Methods.joinConversation:
           self.conversationsHandler.getConversationFromId(conversationId: arguments?["conversationId"] as! String) { conversation in
               if let conversationFromId = conversation {
@@ -156,25 +158,21 @@ public class TwilioChatConversationPlugin: NSObject, FlutterPlugin,FlutterStream
           break
       case Methods.subscribeToMessageUpdate:
           if let conversationId = arguments?["conversationId"] as? String {
-              print("subscribeToMessageUpdate->\(conversationId)")
               conversationsHandler.conversationDelegate = self
               conversationsHandler.messageSubscriptionId = conversationId
           }
           break
-          
       case Methods.unSubscribeToMessageUpdate:
-          print("unSubscribeToMessageUpdate")
           conversationsHandler.conversationDelegate = nil
           break
       default:
           break
-          
     }
   }
 }
 
+/// Called when new message for specific conversation is received
 extension TwilioChatConversationPlugin : ConversationDelegate {
-    
     func onMessageUpdate(message: [String : Any], messageSubscriptionId: String) {
         if let conversationId = message["conversationId"] as? String,let message = message["message"] as? [String:Any] {
             if (messageSubscriptionId == conversationId) {
