@@ -38,9 +38,9 @@ Check out the [example](https://github.com/Zingworks-Sachin/twilio_chat_conversa
 final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
 ```
 
-### Generate token (Only Android. Use the Twilio helper libraries in your back end web services to create access tokens)
+### Generate token (Only Android)
 ```dart
-// T
+// Use the Twilio helper libraries in your back end web services to create access tokens for both Android and iOS platform. However you can use this method to generate access token for Android.
 final String? result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'],serviceSid: credentials['serviceSid']);
 ```
 
