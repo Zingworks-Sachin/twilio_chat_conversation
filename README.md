@@ -38,11 +38,12 @@ Check out the [example](https://github.com/Zingworks-Sachin/twilio_chat_conversa
 final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
 ```
 
-### Generate token (Only android. Use the Twilio helper libraries in your back end web services to create access tokens)
+### Generate token (Only Android. Use the Twilio helper libraries in your back end web services to create access tokens)
 ```dart
 // T
 final String? result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'],serviceSid: credentials['serviceSid']);
 ```
+
 ### Initialize conversation client with the access token received from your back end web services
 ```dart
 final String result = await twilioChatConversationPlugin.initializeConversationClient(accessToken: accessToken);
@@ -89,6 +90,7 @@ twilioChatConversationPlugin.subscribeToMessageUpdate(conversationSid:widget.con
 twilioChatConversationPlugin.onMessageReceived.listen((event) {
 });
 ```
+
 ### Unsubscribe to message update
 ```dart
 twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
@@ -97,13 +99,13 @@ twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.
 ### Listen to access token expiration
 ```dart
 twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
-/// update token if your access token is about to expire
+/// update token if your access token is expired or about to expire
 if (tokenData["statusCode"] == 401){
-  reGenerateUpdateAccessToken()
+  generateAndUpdateAccessToken()
 }
 });
 ```
-### Update token if your access token is about to expire
+### Update access token
 ```dart
 final Map? result = await twilioChatConversationPlugin.updateAccessToken(accessToken:accessToken);
 ```
