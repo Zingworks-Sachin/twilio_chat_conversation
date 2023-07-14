@@ -107,7 +107,8 @@ if (tokenData["statusCode"] == 401){
 ```
 ### Update access token
 ```dart
-/// update token if your access token is expired or about to expire
+/// Call this method if your access token is expired or is about to expire.
+/// Regenerate the access token in your backend and use this method to update the token.
 final Map? result = await twilioChatConversationPlugin.updateAccessToken(accessToken:accessToken);
 ```
 
