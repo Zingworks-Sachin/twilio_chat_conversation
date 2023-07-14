@@ -85,8 +85,9 @@ final String? result = await twilioChatConversationPlugin.addParticipant(partici
 final  List result = await twilioChatConversationPlugin.getParticipants(conversationId: conversationId) ?? [];
 ```
 
-### Subscribe to message update and listen to newly added message in a conversation
+### Subscribe to message update
 ```dart
+/// Use this method to listen to newly added messages in a conversation
 twilioChatConversationPlugin.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
 twilioChatConversationPlugin.onMessageReceived.listen((event) {
 });
@@ -94,6 +95,7 @@ twilioChatConversationPlugin.onMessageReceived.listen((event) {
 
 ### Unsubscribe to message update
 ```dart
+/// Use this method to receive newly added messages in a conversation
 twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
 ```
 
@@ -102,7 +104,7 @@ twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.
 twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
 if (tokenData["statusCode"] == 401){
   generateAndUpdateAccessToken()
-}
+   }
 });
 ```
 ### Update access token
