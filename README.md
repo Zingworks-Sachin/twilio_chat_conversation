@@ -44,8 +44,9 @@ final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversati
 final String? result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'],serviceSid: credentials['serviceSid']);
 ```
 
-### Initialize conversation client with the access token received from your back end web services
+### Initialize conversation client with the access token
 ```dart
+/// Once you receive the access token from your back end web services, pass it to this method to authenticate the twilio user
 final String result = await twilioChatConversationPlugin.initializeConversationClient(accessToken: accessToken);
 ```
 
