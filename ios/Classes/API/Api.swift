@@ -3,7 +3,7 @@ import Alamofire
 
 class TwilioApi {
     
-    static let baseUrl: String = "https://iceberg-squid-2122.twil.io/chat-token"
+    static let baseUrl: String = "Enter your url to generate access token"
     
     static func requestTwilioAccessToken(identity: String,completion: @escaping (Result<String, Error>) -> Void) {
         let headers: HTTPHeaders = [
@@ -11,7 +11,7 @@ class TwilioApi {
         ]
         
         let url:String = baseUrl+"?identity=\(identity)"
-        print("url-->\(url)")
+//        print("url-->\(url)")
         AF.request(url,method: .get, headers: headers).validate().responseString { response in
             switch response.result {
             case .success(let accessToken):

@@ -9,6 +9,7 @@ profile
 
 DerivedData/
 build/
+.env/
 GeneratedPluginRegistrant.h
 GeneratedPluginRegistrant.m
 

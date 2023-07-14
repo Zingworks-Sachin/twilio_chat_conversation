@@ -15,7 +15,19 @@ This package is currently in development phase and should not be used for produc
 
 ## Supported platforms
 - Android
-- iOS (in progress)
+- iOS
+
+## Features
+- Generate Twilio Access Token(Only Android)
+- Create conversation
+- Get list of conversations
+- Fetch list of messages in the conversation
+- Join an existing conversation
+- Send Messages
+- Listen to message update whenever new message is received
+- Add participants in the conversation
+- Get list of participants from the specific conversation
+- Listen to access token expiration
 
 ## Example
 Check out the [example](https://github.com/Zingworks-Sachin/twilio_chat_conversation.git)
@@ -26,9 +38,14 @@ Check out the [example](https://github.com/Zingworks-Sachin/twilio_chat_conversa
 final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
 ```
 
-### Generate token and authenticate user
+### Generate token (Only android. Use the Twilio helper libraries in your back end web services to create access tokens)
 ```dart
+// T
 final String? result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'],serviceSid: credentials['serviceSid']);
+```
+### Initialize conversation client with the access token received from your back end web services
+```dart
+final String result = await twilioChatConversationPlugin.initializeConversationClient(accessToken: accessToken);
 ```
 
 ### Create new conversation
@@ -46,7 +63,7 @@ final List result = await twilioChatConversationPlugin.getConversations() ?? [];
 final  List result = await twilioChatConversationPlugin.getMessages(conversationId: conversationId) ?? [];
 ```
 
-### Join the existing conversation
+### Join an existing conversation
 ```dart
 final String? result = await twilioChatConversationPlugin.joinConversation(conversationId:conversationId);
 ```
@@ -64,6 +81,31 @@ final String? result = await twilioChatConversationPlugin.addParticipant(partici
 ### Get participants from the specific conversation
 ```dart
 final  List result = await twilioChatConversationPlugin.getParticipants(conversationId: conversationId) ?? [];
+```
+
+### Subscribe to message update and listen to newly added message in a conversation
+```dart
+twilioChatConversationPlugin.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
+twilioChatConversationPlugin.onMessageReceived.listen((event) {
+});
+```
+### Unsubscribe to message update
+```dart
+twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
+```
+
+### Listen to access token expiration
+```dart
+twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
+/// update token if your access token is about to expire
+if (tokenData["statusCode"] == 401){
+  reGenerateUpdateAccessToken()
+}
+});
+```
+### Update token if your access token is about to expire
+```dart
+final Map? result = await twilioChatConversationPlugin.updateAccessToken(accessToken:accessToken);
 ```
 
 ## License

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_bloc.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
+import 'package:twilio_chat_conversation_example/chat/common/api/api_provider.dart';
 import 'package:twilio_chat_conversation_example/chat/common/progress_bar.dart';
 import 'package:twilio_chat_conversation_example/chat/common/shared_preference.dart';
 import 'package:twilio_chat_conversation_example/chat/common/toast_utility.dart';
@@ -113,17 +114,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Generate Token and Initialize Client",
                   titleFontSize: 14.0,
                   titleFontWeight: FontWeight.w600,
-                  onPressed: () {
+                  onPressed: () async {
                     FocusScope.of(context).unfocus();
                     if (_userNameController.text.trim().isNotEmpty){
                       identity == _userNameController.text;
+                      String? accountSid = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_account_sid');
+                      String? apiKey = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_api_key');
+                      String? apiSecret = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_api_secret');
+                      String? serviceSid = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_service_sid');
                       chatBloc!.add(GenerateTokenEvent(credentials: {
-                        "accountSid": "AC7dac7823ccc631c5121146db333132f4",
-                        "apiKey": "SKf09f0de93c7a51e090f69df13a524ec5",
-                        "apiSecret": "irAC6QfH9rsnnBC23ZDEcLGcUBb4mS5Z",
-                        // "identity": "arati.pailwan@zingworks.in"
+                        "accountSid": accountSid,
+                        "apiKey": apiKey,
+                        "apiSecret": apiSecret,
                         "identity": _userNameController.text,
-                        "serviceSid": "IS1b4142e65b0f482fb795e2c48d028f45"
+                        "serviceSid": serviceSid
                       }));
                     }else {
                       ToastUtility.showToastAtCenter("Please enter user name.");

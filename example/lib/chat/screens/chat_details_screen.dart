@@ -34,7 +34,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   String typeMessages = "";
   List allMessageList = [];
   final ScrollController _controller = ScrollController(initialScrollOffset: 0);
-  final twilio = TwilioChatConversation();
+  final twilioChatConversationPlugin = TwilioChatConversation();
 
   @override
   void dispose() {
@@ -61,13 +61,11 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     });
   }
   void unSubscribeToMessageUpdate() {
-    twilio.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
-
+    twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
   }
   void subscribeToMessageUpdate() {
-    twilio.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
-
-    twilio.onMessageReceived.listen((event) {
+    twilioChatConversationPlugin.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
+    twilioChatConversationPlugin.onMessageReceived.listen((event) {
       if (mounted){
         setState(() {
           allMessageList.add(event);

@@ -38,15 +38,15 @@ public class TwilioChatConversationPlugin: NSObject,FlutterPlugin,FlutterStreamH
 
       switch call.method {
       case Methods.generateToken:
-          TwilioApi.requestTwilioAccessToken(identity:arguments?["identity"] as! String) { apiResult in
-              switch apiResult {
-              case .success(let accessToken):
-                  result(accessToken)
-              case .failure(let error):
-                  print("Error requesting Twilio Access Token: \(error)")
-                  result("")
-              }
-          }
+//          TwilioApi.requestTwilioAccessToken(identity:arguments?["identity"] as! String) { apiResult in
+//              switch apiResult {
+//              case .success(let accessToken):
+//                  result(accessToken)
+//              case .failure(let error):
+//                  print("Error requesting Twilio Access Token: \(error)")
+//                  result("")
+//              }
+//          }
           break
       case Methods.updateAccessToken:
           self.conversationsHandler.updateAccessToken(accessToken: arguments?["accessToken"] as! String) { tchResult in
