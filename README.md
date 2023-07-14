@@ -19,7 +19,7 @@ This package is currently in development phase and should not be used for produc
 
 ## Features
 - Generate Twilio Access Token(Only Android)
-- Create conversation
+- Create new conversation
 - Get list of conversations
 - Fetch list of messages in the conversation
 - Join an existing conversation
