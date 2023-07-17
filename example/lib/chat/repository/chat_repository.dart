@@ -14,7 +14,7 @@ abstract class ChatRepository {
   Future<String> sendMessage(enteredMessage, conversationId, isFromGhatGpt);
   addParticipant(participantName, conversationId);
   Future<List> seeMyConversations();
-  Future<List> getMessages(conversationId);
+  Future<List> getMessages(conversationId, int? messageCount);
   Future<List<ChatModel>> sendMessageToChatGpt(
       modelsProvider, chatProvider, typeMessage);
   Future<List> getParticipants(String conversationId);
@@ -24,8 +24,6 @@ class ChatRepositoryImpl implements ChatRepository {
   final platform = const MethodChannel('twilio_chatgpt/twilio_sdk_connection');
   final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
   final _apiProvider = ApiProvider();
-
-  //final ApiProvider _apiProvider = ApiProvider();
 
   @override
   Future<String> createConversation(conversationName, identity) async {
@@ -44,9 +42,6 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> generateToken(credentials) async {
     String response;
     try {
-      // final String result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'], serviceSid: credentials['serviceSid']) ?? "UnImplemented Error";
-      // response = result;
-
       String result = "";
       if (Platform.isAndroid){
         result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'], serviceSid: credentials['serviceSid']) ?? "UnImplemented Error";
@@ -54,7 +49,6 @@ class ChatRepositoryImpl implements ChatRepository {
 
       }
       response = result;
-      //print("generateToken result-->$response");
       return response;
     } on PlatformException catch (e) {
       response = e.message.toString();
@@ -78,10 +72,7 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> joinConversation(conversationId) async {
     String response;
     try {
-      // final String result = await platform.invokeMethod(
-      //     'joinConversation', {"conversationName": conversationName});
       final String result = await twilioChatConversationPlugin.joinConversation(conversationId:conversationId) ?? "UnImplemented Error";
-      //print("joinConversation result-->$result");
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -95,11 +86,6 @@ class ChatRepositoryImpl implements ChatRepository {
       enteredMessage, conversationId, isFromChatGpt) async {
     String response;
     try {
-      // final String result = await platform.invokeMethod('sendMessage', {
-      //   "enteredMessage": enteredMessage,
-      //   "conversationName": conversationName,
-      //   "isFromChatGpt": isFromChatGpt
-      // });
       final String result = await twilioChatConversationPlugin.sendMessage(message:enteredMessage,conversationId:conversationId) ?? "UnImplemented Error";
       response = result;
       return response;
@@ -113,10 +99,6 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> addParticipant(participantName, conversationId) async {
     String response;
     try {
-      // final String result = await platform.invokeMethod('addParticipant', {
-      //   "participantName": participantName,
-      //   "conversationName": conversationName
-      // });
       final String result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId) ?? "UnImplemented Error";
       response = result;
       return response;
@@ -130,36 +112,24 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<List> seeMyConversations() async {
     List response;
     try {
-      // final List result = await platform
-      //     .invokeMethod('seeMyConversations', {"mobileNumber": ""});
       final List result = await twilioChatConversationPlugin.getConversations() ?? [];
-      //print("seeMyConversations->$result");
-      // print(result.length.toString());
       response = result;
 
       return response;
-    } on PlatformException catch (e) {
-      String message = e.message.toString();
-      //response = "Failed to get response";
+    } on PlatformException catch (_) {
       return [];
     }
   }
 
   @override
-  Future<List> getMessages(conversationId) async {
+  Future<List> getMessages(conversationId,messageCount) async {
     List response = [];
     try {
-      // final List result = await platform
-      //     .invokeMethod('getMessages', {"conversationName": conversationName});
-      final  List result = await twilioChatConversationPlugin.getMessages(conversationId: conversationId) ?? [];
-      //print("getMessages result->$result");
-      // print(result.length.toString());
+      final  List result = await twilioChatConversationPlugin.getMessages(conversationId: conversationId,messageCount: messageCount) ?? [];
       response = result;
 
       return response;
-    } on PlatformException catch (e) {
-      String message = e.message.toString();
-      //response = "Failed to get response";
+    } on PlatformException catch (_) {
       return [];
     }
   }

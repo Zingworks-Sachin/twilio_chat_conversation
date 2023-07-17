@@ -110,7 +110,7 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
     on<ReceiveMessageEvent>((event, emit) async {
       emit(ReceiveMessageLoadingState());
       try {
-        List result = await chatRepository.getMessages(event.conversationName);
+        List result = await chatRepository.getMessages(event.conversationId,event.messageCount);
 
         emit(ReceiveMessageLoadedState(messagesList: result));
       } catch (e) {

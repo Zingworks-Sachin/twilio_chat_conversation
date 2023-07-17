@@ -248,12 +248,12 @@ public class ConversationHandler {
         return  list;
     }
     /// Get messages from the specific conversation #
-    public static void getAllMessages(String conversationId, MethodChannel.Result result) {
+    public static void getAllMessages(String conversationId, Integer messageCount, MethodChannel.Result result) {
         List<Map<String, Object>> list = new ArrayList<>();
         conversationClient.getConversation(conversationId,new CallbackListener<Conversation>() {
             @Override
             public void onSuccess(Conversation conversation) {
-                conversation.getLastMessages(1000, new CallbackListener<List<Message>>() {
+                conversation.getLastMessages((messageCount != null) ? messageCount :1000, new CallbackListener<List<Message>>() {
                     @Override
                     public void onSuccess(List<Message> messagesList) {
                         for (int i=0; i<messagesList.size(); i++) {

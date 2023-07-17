@@ -33,8 +33,8 @@ public class TwilioChatConversationPlugin: NSObject,FlutterPlugin,FlutterStreamH
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
       let arguments = call.arguments as? [String:Any]
-//      print("call->\(String(describing: call.method))")
-//      print("arguments->\(String(describing: arguments))")
+      print("call->\(String(describing: call.method))")
+      print("arguments->\(String(describing: arguments))")
 
       switch call.method {
       case Methods.generateToken:
@@ -138,7 +138,7 @@ public class TwilioChatConversationPlugin: NSObject,FlutterPlugin,FlutterStreamH
       case Methods.getMessages:
           self.conversationsHandler.getConversationFromId(conversationId: arguments?["conversationId"] as! String) { conversation in
               if let conversationFromId = conversation {
-                  self.conversationsHandler.loadPreviousMessages(conversationFromId) { listOfMessages in
+                  self.conversationsHandler.loadPreviousMessages(conversationFromId,arguments?["messageCount"] as? UInt) { listOfMessages in
 //                      print("listOfMessagess->\(String(describing: listOfMessages))")
                       result(listOfMessages)
                   }
@@ -175,7 +175,6 @@ extension TwilioChatConversationPlugin : ConversationDelegate {
     func onMessageUpdate(message: [String : Any], messageSubscriptionId: String) {
         if let conversationId = message["conversationId"] as? String,let message = message["message"] as? [String:Any] {
             if (messageSubscriptionId == conversationId) {
-                print("onMessageUpdate called")
                 self.eventSink?(message)
             }
         }

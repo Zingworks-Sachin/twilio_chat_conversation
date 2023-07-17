@@ -116,14 +116,14 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
 
     func joinConversation(_ conversation: TCHConversation,_ completion: @escaping(String?) -> Void) {
         if conversation.status == .joined {
-            self.loadPreviousMessages(conversation) { listOfMessages in
-                
+            self.loadPreviousMessages(conversation,1000) { listOfMessages in
+
             }
         } else {
             conversation.join(completion: { result in
                 if result.isSuccessful {
-                    self.loadPreviousMessages(conversation) { listOfMessages in
-                        
+                    self.loadPreviousMessages(conversation,1000) { listOfMessages in
+
                     }
                 }
             })
@@ -142,9 +142,9 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
         }
     }
     
-    func loadPreviousMessages(_ conversation: TCHConversation,_ completion: @escaping([[String: Any]]?) -> Void) {
+    func loadPreviousMessages(_ conversation: TCHConversation,_ messageCount: UInt?,_ completion: @escaping([[String: Any]]?) -> Void) {
         var listOfMessagess: [[String: Any]] = []
-        conversation.getLastMessages(withCount: 1000) { (result, messages) in
+        conversation.getLastMessages(withCount: messageCount ?? 1000) { (result, messages) in
             if let messagesList = messages {
                 messagesList.forEach { message in
                     self.getMessageInDictionary(message) { messageDictionary in

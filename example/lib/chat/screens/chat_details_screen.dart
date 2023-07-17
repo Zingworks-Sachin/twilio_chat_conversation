@@ -30,6 +30,8 @@ class ChatDetailsScreen extends StatefulWidget {
 class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   ChatBloc? chatBloc;
   final msgController = TextEditingController();
+  final msgCountController = TextEditingController();
+
   bool? isFromChatGpt = false;
   String typeMessages = "";
   List allMessageList = [];
@@ -51,7 +53,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   }
   void initializeDate() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
-    chatBloc!.add(ReceiveMessageEvent(conversationName: widget.conversationSid));
+    chatBloc!.add(ReceiveMessageEvent(conversationId: widget.conversationSid));
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _controller.animateTo(
         0.0,
@@ -152,8 +154,9 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
             }
             if (state is SendMessageLoadedState) {
               msgController.text = "";
+              // Provide messageCount to control the number of messages to be displayed in a conversation
               chatBloc!.add(
-                  ReceiveMessageEvent(conversationName: widget.conversationSid));
+                  ReceiveMessageEvent(conversationId: widget.conversationSid,messageCount: 2));
             }
             if (state is SendMessageToChatGptLoadedState) {
               chatBloc!.add(SendMessageEvent(

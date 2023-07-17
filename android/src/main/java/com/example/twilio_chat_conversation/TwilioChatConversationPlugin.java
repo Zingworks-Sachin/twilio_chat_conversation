@@ -68,11 +68,11 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
         break;
       // Get messages from the specific conversation #
       case Methods.getMessages:
-        ConversationHandler.getAllMessages(call.argument("conversationId"),result);
+        ConversationHandler.getAllMessages(call.argument("conversationId"),call.argument("messageCount"),result);
         break;
       //Join the existing conversation #
       case Methods.joinConversation:
-        String joinStatus =  ConversationHandler.joinConversation(call.argument("conversationId"));
+        String joinStatus = ConversationHandler.joinConversation(call.argument("conversationId"));
         result.success(joinStatus);
         break;
       // Send message #

@@ -30,7 +30,7 @@ class MockTwilioChatConversationPlatform
   }
 
   @override
-  Future<List?> getMessages({required String conversationId}) {
+  Future<List?> getMessages({required String conversationId,int? messageCount}) {
     // TODO: implement getMessagesFromConversation
     throw UnimplementedError();
   }

@@ -1,6 +1,6 @@
 name: twilio_chat_conversation
 description: A Flutter plugin for Twilio Conversations which allows you to build engaging conversational messaging experiences on iOS and Android platforms.
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/Zingworks-Sachin/twilio_chat_conversation
 repository: https://github.com/Zingworks-Sachin/twilio_chat_conversation
 issue_tracker: https://github.com/Zingworks-Sachin/twilio_chat_conversation/issues

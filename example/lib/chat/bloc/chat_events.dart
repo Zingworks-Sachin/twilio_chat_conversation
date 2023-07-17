@@ -64,8 +64,9 @@ class SendMessageEvent extends ChatEvents {
 
 //SendMessage
 class ReceiveMessageEvent extends ChatEvents {
-  final String? conversationName;
-  ReceiveMessageEvent({required this.conversationName});
+  final String? conversationId;
+  final int? messageCount;
+  ReceiveMessageEvent({required this.conversationId,this.messageCount});
 
   @override
   List<Object?> get props => throw UnimplementedError();
