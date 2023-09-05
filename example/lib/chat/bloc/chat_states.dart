@@ -55,7 +55,6 @@ class UpdateTokenErrorState extends ChatStates {
   List<Object?> get props => throw UnimplementedError();
 }
 
-
 class InitializeConversationClientLoadingState extends ChatStates {
   @override
   List<Object?> get props => [];
@@ -111,7 +110,8 @@ class JoinConversionLoadingState extends ChatStates {
 class JoinConversionLoadedState extends ChatStates {
   final String result;
   final String conversationName;
-  JoinConversionLoadedState({required this.result,required this.conversationName});
+  JoinConversionLoadedState(
+      {required this.result, required this.conversationName});
 
   @override
   List<Object?> get props => throw UnimplementedError();
@@ -198,6 +198,29 @@ class AddParticipantErrorState extends ChatStates {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class RemoveParticipantLoadingState extends ChatStates {
+  @override
+  List<Object?> get props => [];
+}
+
+// AddParticipantLoadedState
+class RemoveParticipantLoadedState extends ChatStates {
+  final String result;
+  RemoveParticipantLoadedState({required this.result});
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
+// AddParticipantErrorState
+class RemoveParticipantErrorState extends ChatStates {
+  final String message;
+  RemoveParticipantErrorState({required this.message});
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 // SeeMyConversationsLoadingState
 class SeeMyConversationsLoadingState extends ChatStates {
   @override
@@ -245,7 +268,6 @@ class SendMessageToChatGptErrorState extends ChatStates {
   @override
   List<Object?> get props => throw UnimplementedError();
 }
-
 
 class GetParticipantsLoadingState extends ChatStates {
   @override

@@ -42,7 +42,8 @@ class CreateConversationEvent extends ChatEvents {
 class JoinConversionEvent extends ChatEvents {
   final String conversationId;
   final String conversationName;
-  JoinConversionEvent({required this.conversationId,required this.conversationName});
+  JoinConversionEvent(
+      {required this.conversationId, required this.conversationName});
 
   @override
   List<Object?> get props => throw UnimplementedError();
@@ -66,7 +67,7 @@ class SendMessageEvent extends ChatEvents {
 class ReceiveMessageEvent extends ChatEvents {
   final String? conversationId;
   final int? messageCount;
-  ReceiveMessageEvent({required this.conversationId,this.messageCount});
+  ReceiveMessageEvent({required this.conversationId, this.messageCount});
 
   @override
   List<Object?> get props => throw UnimplementedError();
@@ -83,13 +84,25 @@ class AddParticipantEvent extends ChatEvents {
   List<Object?> get props => throw UnimplementedError();
 }
 
-//AddParticipant
+//RemoveParticipant
+class RemoveParticipantEvent extends ChatEvents {
+  final String participantName;
+  final String conversationName;
+  RemoveParticipantEvent(
+      {required this.participantName, required this.conversationName});
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
+//SeeMyConversationsEvent
 class SeeMyConversationsEvent extends ChatEvents {
   SeeMyConversationsEvent();
 
   @override
   List<Object?> get props => throw UnimplementedError();
 }
+
 class GetParticipantsEvent extends ChatEvents {
   final String conversationId;
   GetParticipantsEvent({required this.conversationId});

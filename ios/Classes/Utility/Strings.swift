@@ -14,6 +14,9 @@ class Strings {
     /// Used when participant is added to a conversation successfully
     static let addParticipantSuccess: String = "Participant added successfully."
     
+    /// Used when participant is added to a conversation successfully
+    static let removedParticipantSuccess: String = "Participant removed successfully."
+    
     /// Used when authentication is successful
     static let authenticationSuccessful: String = "Authentication Successful"
     

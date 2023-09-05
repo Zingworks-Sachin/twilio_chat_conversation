@@ -7,7 +7,8 @@ abstract class TwilioChatConversationPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static TwilioChatConversationPlatform _instance = MethodChannelTwilioChatConversation();
+  static TwilioChatConversationPlatform _instance =
+      MethodChannelTwilioChatConversation();
 
   /// The default instance of [TwilioChatConversationPlatform] to use.
   ///
@@ -25,10 +26,18 @@ abstract class TwilioChatConversationPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
-  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity, required String serviceSid}) {
+
+  Future<String?> generateToken(
+      {required String accountSid,
+      required String apiKey,
+      required String apiSecret,
+      required String identity,
+      required String serviceSid}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
-  Future<String?> createConversation({required String conversationName ,required String identity}) {
+
+  Future<String?> createConversation(
+      {required String conversationName, required String identity}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
@@ -36,18 +45,22 @@ abstract class TwilioChatConversationPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<List?> getMessages({required String conversationId, int? messageCount}) {
+  Future<List?> getMessages(
+      {required String conversationId, int? messageCount}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
   Future<String?> joinConversation({required String conversationId}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
-  Future<String?> sendMessage({required String conversationId, required String message}) {
+
+  Future<String?> sendMessage(
+      {required String conversationId, required String message}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<String?> addParticipant({required String conversationId, required String participantName}) {
+  Future<String?> addParticipant(
+      {required String conversationId, required String participantName}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
@@ -72,6 +85,11 @@ abstract class TwilioChatConversationPlatform extends PlatformInterface {
   }
 
   Future<Map?> updateAccessToken({required String accessToken}) {
+    throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  Future<String?> removeParticipant(
+      {required conversationId, required participantName}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

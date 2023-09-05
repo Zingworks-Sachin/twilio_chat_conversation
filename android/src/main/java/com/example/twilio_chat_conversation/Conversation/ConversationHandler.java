@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodChannel;
 
 public class ConversationHandler {
     /// Entry point for the Conversations SDK.
-    protected static  ConversationsClient conversationClient;
+    public static  ConversationsClient conversationClient;
     public static FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     private static MessageInterface messageInterface;
     private static AccessTokenInterface accessTokenInterface;
@@ -83,6 +85,35 @@ public class ConversationHandler {
                         result.success(errorInfo.getMessage());
                     }
                 });
+            }
+            @Override
+            public void onError(ErrorInfo errorInfo) {
+                CallbackListener.super.onError(errorInfo);
+            }
+        });
+    }
+    /// Remove participant in a conversation #
+    public static void removeParticipant(String participantName, String conversationId, MethodChannel.Result result){
+        conversationClient.getConversation(conversationId,new CallbackListener<Conversation>(){
+            @Override
+            public void onSuccess(Conversation conversation) {
+                // Retrieve the conversation object using the conversation SID
+                System.out.println("admin-"+conversation.getCreatedBy()+"---"+conversationClient.getMyIdentity());
+
+//                if (conversationClient.getMyIdentity().equals(conversation.getCreatedBy())){
+                    conversation.removeParticipantByIdentity(participantName,new StatusListener() {
+                        @Override
+                        public void onSuccess() {
+                            result.success(Strings.removedParticipantSuccess);
+                        }
+
+                        @Override
+                        public void onError(ErrorInfo errorInfo) {
+                            StatusListener.super.onError(errorInfo);
+                            result.success(errorInfo.getMessage());
+                        }
+                    });
+//                }
             }
             @Override
             public void onError(ErrorInfo errorInfo) {
@@ -196,8 +227,7 @@ public class ConversationHandler {
 
                     @Override
                     public void onSynchronizationChanged(Conversation conversation) {
-                        //System.out.println("onSynchronizationChanged");
-
+                        System.out.println("conversation onSynchronizationChanged->"+conversation.getSynchronizationStatus().toString());
                     }
                 });
             }
@@ -285,8 +315,8 @@ public class ConversationHandler {
         ConversationsClient.create(flutterPluginBinding.getApplicationContext(), accessToken, props, new CallbackListener<ConversationsClient>() {
             @Override
             public void onSuccess(ConversationsClient client) {
-                ConversationHandler.conversationClient = client;
-                client.addListener(new ConversationsClientListener() {
+                conversationClient = client;
+                conversationClient.addListener(new ConversationsClientListener() {
 
                     @Override
                     public void onConversationAdded(Conversation conversation) {
@@ -329,8 +359,11 @@ public class ConversationHandler {
                     }
 
                     @Override
-                    public void onClientSynchronization(ConversationsClient.SynchronizationStatus status) {
-
+                    public void onClientSynchronization(ConversationsClient.SynchronizationStatus synchronizationStatus) {
+                        System.out.print("onClientSynchronization synchronizationStatus->"+synchronizationStatus.getValue());
+                        if (synchronizationStatus == ConversationsClient.SynchronizationStatus.COMPLETED) {
+                            System.out.print("Client Synchronized");
+                        }
                     }
 
                     @Override
@@ -395,10 +428,17 @@ public class ConversationHandler {
             @Override
             public void onSuccess(Conversation conversation) {
                 List<Participant> participantList = conversation.getParticipantsList();
-                List<String> participants = new ArrayList<>();
+                List<Map<String, Object>> participants = new ArrayList<>();
                 for (int i=0;i<participantList.size();i++) {
-                    participants.add(participantList.get(i).getIdentity());
-                    //System.out.println("getParticipants->" + participants);
+                    Map<String, Object> participantMap = new HashMap<>();
+                    participantMap.put("identity",participantList.get(i).getIdentity());
+                    participantMap.put("sid",participantList.get(i).getSid());
+                    participantMap.put("conversationSid",participantList.get(i).getConversation().getSid());
+                    participantMap.put("conversationCreatedBy",participantList.get(i).getConversation().getCreatedBy());
+                    participantMap.put("dateCreated",participantList.get(i).getConversation().getDateCreated());
+                    participantMap.put("isAdmin", Objects.equals(participantList.get(i).getConversation().getCreatedBy(), conversationClient.getMyIdentity()));
+                    participants.add(participantMap);
+                    System.out.println("participantMap->" + participantMap);
                 }
                 result.success(participants);
             }

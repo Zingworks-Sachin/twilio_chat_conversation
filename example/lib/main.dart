@@ -12,11 +12,13 @@ import 'package:twilio_chat_conversation_example/chat/screens/home_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp( BlocProvider(
+  runApp(BlocProvider(
     create: (context) => ChatBloc(
       chatRepository: ChatRepositoryImpl(),
     ),
-    child: const MyHomePage(title: 'Twilio Plugin',),
+    child: const MyHomePage(
+      title: 'Twilio Plugin',
+    ),
   ));
 }
 
@@ -31,7 +33,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String platformVersion = 'Unknown';
-  TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
+  TwilioChatConversation twilioChatConversationPlugin =
+      TwilioChatConversation();
   ChatBloc? chatBloc;
 
   @override
@@ -39,11 +42,12 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     listenToAccessTokenStatus();
   }
-  listenToAccessTokenStatus(){
+
+  listenToAccessTokenStatus() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
     twilioChatConversationPlugin.onTokenStatusChange.listen((tokenData) {
       /// update token if your access token is about to expire
-      if (tokenData["statusCode"] == 401){
+      if (tokenData["statusCode"] == 401) {
         chatBloc?.add(UpdateTokenEvent());
       }
     });
@@ -71,10 +75,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           child: StreamBuilder<Map>(
               stream: TwilioChatConversation().onTokenStatusChange,
-            builder: (context, snapshot) {
-              return HomeScreen(platformVersion: platformVersion,);
-            }
-          ),
+              builder: (context, snapshot) {
+                return HomeScreen(
+                  platformVersion: platformVersion,
+                );
+              }),
         ),
       ),
     );

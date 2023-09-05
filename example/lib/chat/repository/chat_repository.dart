@@ -13,6 +13,7 @@ abstract class ChatRepository {
   Future<String> joinConversation(conversationId);
   Future<String> sendMessage(enteredMessage, conversationId, isFromGhatGpt);
   addParticipant(participantName, conversationId);
+  removeParticipant(participantName, conversationId);
   Future<List> seeMyConversations();
   Future<List> getMessages(conversationId, int? messageCount);
   Future<List<ChatModel>> sendMessageToChatGpt(
@@ -22,14 +23,18 @@ abstract class ChatRepository {
 
 class ChatRepositoryImpl implements ChatRepository {
   final platform = const MethodChannel('twilio_chatgpt/twilio_sdk_connection');
-  final TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
+  final TwilioChatConversation twilioChatConversationPlugin =
+      TwilioChatConversation();
   final _apiProvider = ApiProvider();
 
   @override
   Future<String> createConversation(conversationName, identity) async {
     String response;
     try {
-      final String result = await twilioChatConversationPlugin.createConversation(conversationName:conversationName, identity: identity) ?? "UnImplemented Error";
+      final String result =
+          await twilioChatConversationPlugin.createConversation(
+                  conversationName: conversationName, identity: identity) ??
+              "UnImplemented Error";
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -43,11 +48,15 @@ class ChatRepositoryImpl implements ChatRepository {
     String response;
     try {
       String result = "";
-      if (Platform.isAndroid){
-        result = await twilioChatConversationPlugin.generateToken(accountSid:credentials['accountSid'],apiKey:credentials['apiKey'],apiSecret:credentials['apiSecret'],identity:credentials['identity'], serviceSid: credentials['serviceSid']) ?? "UnImplemented Error";
-      }else {
-
-      }
+      if (Platform.isAndroid) {
+        result = await twilioChatConversationPlugin.generateToken(
+                accountSid: credentials['accountSid'],
+                apiKey: credentials['apiKey'],
+                apiSecret: credentials['apiSecret'],
+                identity: credentials['identity'],
+                serviceSid: credentials['serviceSid']) ??
+            "UnImplemented Error";
+      } else {}
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -60,7 +69,9 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> initializeConversationClient(String accessToken) async {
     String response;
     try {
-      final String result = await twilioChatConversationPlugin.initializeConversationClient(accessToken: accessToken) ?? "UnImplemented Error";
+      final String result = await twilioChatConversationPlugin
+              .initializeConversationClient(accessToken: accessToken) ??
+          "UnImplemented Error";
       response = result;
     } on PlatformException catch (e) {
       response = e.message.toString();
@@ -72,7 +83,9 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> joinConversation(conversationId) async {
     String response;
     try {
-      final String result = await twilioChatConversationPlugin.joinConversation(conversationId:conversationId) ?? "UnImplemented Error";
+      final String result = await twilioChatConversationPlugin.joinConversation(
+              conversationId: conversationId) ??
+          "UnImplemented Error";
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -86,7 +99,9 @@ class ChatRepositoryImpl implements ChatRepository {
       enteredMessage, conversationId, isFromChatGpt) async {
     String response;
     try {
-      final String result = await twilioChatConversationPlugin.sendMessage(message:enteredMessage,conversationId:conversationId) ?? "UnImplemented Error";
+      final String result = await twilioChatConversationPlugin.sendMessage(
+              message: enteredMessage, conversationId: conversationId) ??
+          "UnImplemented Error";
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -99,7 +114,10 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<String> addParticipant(participantName, conversationId) async {
     String response;
     try {
-      final String result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId) ?? "UnImplemented Error";
+      final String result = await twilioChatConversationPlugin.addParticipant(
+              participantName: participantName,
+              conversationId: conversationId) ??
+          "UnImplemented Error";
       response = result;
       return response;
     } on PlatformException catch (e) {
@@ -112,7 +130,8 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<List> seeMyConversations() async {
     List response;
     try {
-      final List result = await twilioChatConversationPlugin.getConversations() ?? [];
+      final List result =
+          await twilioChatConversationPlugin.getConversations() ?? [];
       response = result;
 
       return response;
@@ -122,10 +141,12 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<List> getMessages(conversationId,messageCount) async {
+  Future<List> getMessages(conversationId, messageCount) async {
     List response = [];
     try {
-      final  List result = await twilioChatConversationPlugin.getMessages(conversationId: conversationId,messageCount: messageCount) ?? [];
+      final List result = await twilioChatConversationPlugin.getMessages(
+              conversationId: conversationId, messageCount: messageCount) ??
+          [];
       response = result;
 
       return response;
@@ -147,7 +168,9 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<List> getParticipants(String conversationId) async {
     List response = [];
     try {
-      final  List result = await twilioChatConversationPlugin.getParticipants(conversationId: conversationId) ?? [];
+      final List result = await twilioChatConversationPlugin.getParticipants(
+              conversationId: conversationId) ??
+          [];
       //print("getParticipants result->$result");
       response = result;
       return response;
@@ -159,10 +182,11 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Future<String> getAccessTokenFromServer(credentials) async {
-    Map<String, dynamic> response = await _apiProvider.get(credentials["identity"]);
-    if (response["statusCode"] == 200){
+    Map<String, dynamic> response =
+        await _apiProvider.get(credentials["identity"]);
+    if (response["statusCode"] == 200) {
       return response["token"];
-    }else {
+    } else {
       return response[""];
     }
   }
@@ -171,11 +195,29 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<Map> updateAccessToken(String accessToken) async {
     Map? response;
     try {
-      final Map? result = await twilioChatConversationPlugin.updateAccessToken(accessToken:accessToken);
+      final Map? result = await twilioChatConversationPlugin.updateAccessToken(
+          accessToken: accessToken);
       response = result;
     } on PlatformException catch (e) {
       response = {};
     }
     return response ?? {};
+  }
+
+  @override
+  removeParticipant(participantName, conversationId) async {
+    String response;
+    try {
+      final String result =
+          await twilioChatConversationPlugin.removeParticipant(
+                  participantName: participantName,
+                  conversationId: conversationId) ??
+              "UnImplemented Error";
+      response = result;
+      return response;
+    } on PlatformException catch (e) {
+      response = e.message.toString();
+      return response;
+    }
   }
 }

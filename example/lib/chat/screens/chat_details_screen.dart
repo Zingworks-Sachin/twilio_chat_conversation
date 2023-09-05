@@ -11,7 +11,6 @@ import 'package:twilio_chat_conversation_example/chat/common/providers/models_pr
 import 'package:twilio_chat_conversation_example/chat/common/widgets/bubble_widget.dart';
 import 'package:twilio_chat_conversation_example/chat/common/widgets/chat_text_widget.dart';
 
-
 class ChatDetailsScreen extends StatefulWidget {
   final String conversationName;
   final String conversationSid;
@@ -51,6 +50,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     initializeDate();
     subscribeToMessageUpdate();
   }
+
   void initializeDate() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
     chatBloc!.add(ReceiveMessageEvent(conversationId: widget.conversationSid));
@@ -62,13 +62,17 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
       );
     });
   }
+
   void unSubscribeToMessageUpdate() {
-    twilioChatConversationPlugin.unSubscribeToMessageUpdate(conversationSid: widget.conversationSid);
+    twilioChatConversationPlugin.unSubscribeToMessageUpdate(
+        conversationSid: widget.conversationSid);
   }
+
   void subscribeToMessageUpdate() {
-    twilioChatConversationPlugin.subscribeToMessageUpdate(conversationSid:widget.conversationSid);
+    twilioChatConversationPlugin.subscribeToMessageUpdate(
+        conversationSid: widget.conversationSid);
     twilioChatConversationPlugin.onMessageReceived.listen((event) {
-      if (mounted){
+      if (mounted) {
         setState(() {
           allMessageList.add(event);
           allMessageList
@@ -77,6 +81,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
@@ -84,7 +89,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title:  Text(widget.conversationName),
+            title: Text(widget.conversationName),
             backgroundColor: Colors.black,
           ),
           backgroundColor: Colors.black,
@@ -144,19 +149,19 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
             );
           }, listener: (BuildContext context, ChatStates state) {
             if (state is ReceiveMessageLoadedState) {
-              if (mounted){
+              if (mounted) {
                 setState(() {
                   allMessageList.addAll(state.messagesList);
-                  allMessageList
-                      .sort((a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
+                  allMessageList.sort(
+                      (a, b) => (b['dateCreated']).compareTo(a['dateCreated']));
                 });
               }
             }
             if (state is SendMessageLoadedState) {
               msgController.text = "";
               // Provide messageCount to control the number of messages to be displayed in a conversation
-              chatBloc!.add(
-                  ReceiveMessageEvent(conversationId: widget.conversationSid,messageCount: 2));
+              chatBloc!.add(ReceiveMessageEvent(
+                  conversationId: widget.conversationSid, messageCount: 2));
             }
             if (state is SendMessageToChatGptLoadedState) {
               chatBloc!.add(SendMessageEvent(

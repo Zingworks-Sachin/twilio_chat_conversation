@@ -16,6 +16,10 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     // Called whenever a conversation we've joined receives a new message
     func conversationsClient(_ client: TwilioConversationsClient, conversation: TCHConversation,
                     messageAdded message: TCHMessage) {
+        guard client.synchronizationStatus == .completed else {
+            return
+        }
+        
                 self.getMessageInDictionary(message) { messageDictionary in
             if let messageDict = messageDictionary {
                 var updatedMessage: [String: Any] = [:]
@@ -33,6 +37,26 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
         tokenStatusMap["message"] = Strings.accessTokenWillExpire
         tokenEventSink?(tokenStatusMap)
     }
+    
+    func conversationsClient(_ client: TwilioConversationsClient, synchronizationStatusUpdated status: TCHClientSynchronizationStatus) {
+        print("status->\(status.hashValue)--\(client.synchronizationStatus)")
+        
+        guard status == .completed else {
+            return
+        }
+        
+//            checkConversationCreation { (_, conversation) in
+//               if let conversation = conversation {
+//                   self.joinConversation(conversation)
+//               } else {
+//                   self.createConversation { (success, conversation) in
+//                       if success, let conversation = conversation {
+//                           self.joinConversation(conversation)
+//                       }
+//                   }
+//               }
+//            }
+        }
     
     func conversationsClientTokenExpired(_ client: TwilioConversationsClient) {
         print("Access token expired.\(String(describing: tokenEventSink))")
@@ -97,6 +121,9 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
         guard let client = client else {
             return
         }
+        guard client.synchronizationStatus == .completed else {
+            return
+        }
         completion(client.myConversations() ?? [])
     }
     
@@ -113,18 +140,28 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
             })
         }
     }
+    
+    func removeParticipants(conversationId:String,participantName:String,_ completion: @escaping(TCHResult?) -> Void) {
+        self.getConversationFromId(conversationId: conversationId) { conversation in
+            conversation?.removeParticipant(byIdentity: participantName,completion: { status in
+                print("status->\(status)")
+                completion(status)
+            })
+        }
+    }
+
 
     func joinConversation(_ conversation: TCHConversation,_ completion: @escaping(String?) -> Void) {
         if conversation.status == .joined {
-            self.loadPreviousMessages(conversation,1000) { listOfMessages in
-
-            }
+//            self.loadPreviousMessages(conversation,1000) { listOfMessages in
+//
+//            }
         } else {
             conversation.join(completion: { result in
                 if result.isSuccessful {
-                    self.loadPreviousMessages(conversation,1000) { listOfMessages in
-
-                    }
+//                    self.loadPreviousMessages(conversation,1000) { listOfMessages in
+//
+//                    }
                 }
             })
         }
@@ -135,6 +172,9 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
         guard let client = client else {
             return
         }
+        guard client.synchronizationStatus == .completed else {
+            return
+        }
         client.conversation(withSidOrUniqueName: conversationId) { (result, conversation) in
             if let conversationFromSid = conversation {
                 completion(conversationFromSid)
@@ -143,6 +183,10 @@ class ConversationsHandler: NSObject, TwilioConversationsClientDelegate {
     }
     
     func loadPreviousMessages(_ conversation: TCHConversation,_ messageCount: UInt?,_ completion: @escaping([[String: Any]]?) -> Void) {
+        print("synchronizationStatus->\(client?.synchronizationStatus == .completed)")
+        guard client?.synchronizationStatus == .completed else {
+            return
+        }
         var listOfMessagess: [[String: Any]] = []
         conversation.getLastMessages(withCount: messageCount ?? 1000) { (result, messages) in
             if let messagesList = messages {

@@ -9,6 +9,8 @@ public class Strings {
     public final static  String conversationExists = "Conversation with provided unique name already exists";
     /// Used when participant is added to a conversation successfully
     public final static String addParticipantSuccess = "Participant added successfully.";
+    public final static String removedParticipantSuccess = "Participant removed successfully.";
+
     /// Used when there is an error while adding a participant to a conversation
     public final static String authenticationSuccessful = "Authentication Successful";
     /// Used when authentication is unsuccessful

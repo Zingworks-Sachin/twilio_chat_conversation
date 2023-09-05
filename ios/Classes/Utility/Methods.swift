@@ -10,6 +10,7 @@ class Methods {
     static let joinConversation: String = "joinConversation"
     static let sendMessage: String = "sendMessage"
     static let addParticipant: String = "addParticipant"
+    static let removeParticipant: String = "removeParticipant"
     static let receiveMessages: String = "receiveMessages"
     static let getParticipants: String = "getParticipants"
     static let unSubscribeToMessageUpdate: String = "unSubscribeToMessageUpdate"

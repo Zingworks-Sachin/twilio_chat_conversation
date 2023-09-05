@@ -243,9 +243,11 @@ class ApiProvider {
     //print(env['API_KEY']);
     return env['API_KEY'];
   }
-  static Future<String> getEnvironmentKeyByName({required String keyName}) async {
+
+  static Future<String> getEnvironmentKeyByName(
+      {required String keyName}) async {
     final env = await parseStringToMap(assetsFileName: '.env');
-    return env[keyName]?? "";
+    return env[keyName] ?? "";
   }
 
   static Future<Map<String, String>> parseStringToMap(

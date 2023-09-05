@@ -65,11 +65,14 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                           title: Text(
                             widget.conversationList[index]["conversationName"],
                             style: const TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.bold,color: Colors.white),
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                           subtitle: Text(
                             widget.conversationList[index]["sid"],
-                            style: const TextStyle(fontSize: 12.0,color: Colors.white),
+                            style: const TextStyle(
+                                fontSize: 12.0, color: Colors.white),
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -88,9 +91,9 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                                                 .conversationList[index]["sid"];
                                             chatBloc!.add(AddParticipantEvent(
                                                 participantName: enteredText,
-                                                conversationName:
-                                                    widget.conversationList[index]
-                                                        ["sid"]));
+                                                conversationName: widget
+                                                        .conversationList[index]
+                                                    ["sid"]));
                                             Navigator.of(context).pop();
                                           },
                                           dialogTitle: "Add Participant",
@@ -106,17 +109,25 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                                   onPressed: () {
                                     chatBloc!.add(JoinConversionEvent(
                                         conversationId: widget
-                                            .conversationList[index]["sid"], conversationName: widget
-                                        .conversationList[index]["conversationName"]));
+                                            .conversationList[index]["sid"],
+                                        conversationName:
+                                            widget.conversationList[index]
+                                                ["conversationName"]));
                                   },
-                                  icon: const Icon(Icons.chat,color: Colors.greenAccent,)),
+                                  icon: const Icon(
+                                    Icons.chat,
+                                    color: Colors.greenAccent,
+                                  )),
                               IconButton(
                                   onPressed: () {
                                     chatBloc!.add(GetParticipantsEvent(
                                         conversationId: widget
                                             .conversationList[index]["sid"]));
                                   },
-                                  icon: const Icon(Icons.people_alt_rounded,color: Colors.limeAccent,)),
+                                  icon: const Icon(
+                                    Icons.people_alt_rounded,
+                                    color: Colors.limeAccent,
+                                  )),
                             ],
                           ),
                         ),
@@ -130,6 +141,9 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
         }, listener: (BuildContext context, ChatStates state) {
           if (state is AddParticipantLoadedState) {
             ToastUtility.showToastAtBottom(state.addedStatus);
+          }
+          if (state is RemoveParticipantLoadedState) {
+            ToastUtility.showToastAtBottom(state.result);
           }
           if (state is JoinConversionLoadedState) {
             Navigator.push(
@@ -146,85 +160,135 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
               ),
             );
           }
-          
-          if (state is GetParticipantsLoadingState){
-           ProgressBar.show(context);
+
+          if (state is GetParticipantsLoadingState) {
+            ProgressBar.show(context);
           }
-          if (state is GetParticipantsLoadedState){
+          if (state is GetParticipantsLoadedState) {
             ProgressBar.dismiss(context);
             showBottomSheet(
-                backgroundColor:Colors.transparent,
-                context: context, builder: (c){
-              return SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.zero,
-                  decoration: const BoxDecoration(
-                      color: Colors.white54,
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 10, color: Colors.black, spreadRadius: 5)
-                      ]),
-                  // height: 200,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                       Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Row(
-
-                          children: const [
-                            Icon(Icons.people_outline_outlined,size: 30,color: Colors.limeAccent,),
-                            Padding(
-                              padding: EdgeInsets.only(left: 8.0),
-                              child: Text("Participants",style: TextStyle(
-                                color: Colors.limeAccent,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600
-                              ),),
-                            ),
-                          ],
-                        ),
-                      ),
-                      ListView.separated(
-                        padding: const EdgeInsets.all(10.0),
-                        physics: const ClampingScrollPhysics(),
-                        shrinkWrap: true,
-                        separatorBuilder: (c,i){
-                          return const Divider(height: 2.0,);
-                        },
-                        itemBuilder: (context, index){
-                          return Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.person,size: 20,color: Colors.brown,),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text("${state.participantsList[index]}",
-                                        style: const TextStyle(
-                                        color: Colors.brown,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500
-                                    ),),
+                backgroundColor: Colors.transparent,
+                context: context,
+                builder: (c) {
+                  return SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.zero,
+                      margin: EdgeInsets.zero,
+                      decoration: const BoxDecoration(
+                          color: Colors.white54,
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 10,
+                                color: Colors.black,
+                                spreadRadius: 5)
+                          ]),
+                      // height: 200,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              children: const [
+                                Icon(
+                                  Icons.people_outline_outlined,
+                                  size: 30,
+                                  color: Colors.limeAccent,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    "Participants",
+                                    style: TextStyle(
+                                        color: Colors.limeAccent,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          );
-                        }, itemCount: state.participantsList.length,),
-                    ],
-                  ),
-                ),
-              );
-            });
+                          ),
+                          ListView.separated(
+                            padding: const EdgeInsets.all(10.0),
+                            physics: const ClampingScrollPhysics(),
+                            shrinkWrap: true,
+                            separatorBuilder: (c, i) {
+                              return const Divider(
+                                height: 2.0,
+                              );
+                            },
+                            itemBuilder: (context, participantIndex) {
+                              return Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const Icon(
+                                            Icons.person,
+                                            size: 20,
+                                            color: Colors.brown,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Text(
+                                              "${state.participantsList[participantIndex]["identity"]}",
+                                              style: const TextStyle(
+                                                  color: Colors.brown,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          print(
+                                              "participantsList sid->${state.participantsList[participantIndex]["sid"]}");
+                                          print(
+                                              "conversationList sid->${state.participantsList[participantIndex]["conversationSid"]}");
+
+                                          chatBloc!.add(RemoveParticipantEvent(
+                                              participantName: state
+                                                      .participantsList[
+                                                  participantIndex]["identity"],
+                                              conversationName:
+                                                  state.participantsList[
+                                                          participantIndex]
+                                                      ["conversationSid"]));
+                                          Navigator.of(context).pop();
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete_forever,
+                                          size: 20,
+                                          color: Colors.red,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: state.participantsList.length,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
           }
-          if (state is GetParticipantsErrorState){
+          if (state is GetParticipantsErrorState) {
             ProgressBar.dismiss(context);
-            ToastUtility.showToastAtCenter("Something went wrong. Please try again later.");
+            ToastUtility.showToastAtCenter(
+                "Something went wrong. Please try again later.");
           }
         }));
   }

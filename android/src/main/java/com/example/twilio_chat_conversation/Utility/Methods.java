@@ -9,6 +9,7 @@ public class Methods {
     public final static String joinConversation = "joinConversation";
     public final static String sendMessage = "sendMessage";
     public final static String addParticipant = "addParticipant";
+    public final static String removeParticipant = "removeParticipant";
     public final static String receiveMessages = "receiveMessages";
     public final static String getParticipants = "getParticipants";
     public final static String unSubscribeToMessageUpdate = "unSubscribeToMessageUpdate";

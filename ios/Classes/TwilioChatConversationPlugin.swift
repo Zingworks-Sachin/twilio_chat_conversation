@@ -107,11 +107,16 @@ public class TwilioChatConversationPlugin: NSObject,FlutterPlugin,FlutterStreamH
           }
           break
       case Methods.getParticipants:
-          var listOfParticipants: [String] = []
+          var listOfParticipants: [[String:Any]] = []
           self.conversationsHandler.getParticipants(conversationId: arguments?["conversationId"] as! String) { participantsList in
-              for user in participantsList{
-                  if (!ConvertorUtility.isNilOrEmpty(user.identity)){
-                      listOfParticipants.append(user.identity!)
+              for user in participantsList {
+                  var participant: [String: Any] = [:]
+                  if (!ConvertorUtility.isNilOrEmpty(user.identity)) {
+                      participant["identity"] = user.identity
+                      participant["sid"] = user.sid
+                      participant["conversationSid"] = user.conversation?.sid
+                      participant["dateCreated"] = user.dateCreated
+                      listOfParticipants.append(participant)
                   }
               }
               result(listOfParticipants)
@@ -127,6 +132,18 @@ public class TwilioChatConversationPlugin: NSObject,FlutterPlugin,FlutterStreamH
                   }
               }
           }
+          break
+      case Methods.removeParticipant:
+          self.conversationsHandler.removeParticipants(conversationId: arguments?["conversationId"] as! String, participantName: arguments?["participantName"] as! String) { status in
+              if let removeParticipantStatus = status {
+                  if (removeParticipantStatus.isSuccessful){
+                      result(Strings.removedParticipantSuccess)
+                  }else {
+                      result(removeParticipantStatus.resultText)
+                  }
+              }
+          }
+          break
       case Methods.joinConversation:
           self.conversationsHandler.getConversationFromId(conversationId: arguments?["conversationId"] as! String) { conversation in
               if let conversationFromId = conversation {

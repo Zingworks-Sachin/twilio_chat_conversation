@@ -83,6 +83,9 @@ public class TwilioChatConversationPlugin implements FlutterPlugin, MethodCallHa
       case Methods.addParticipant:
         ConversationHandler.addParticipant(call.argument("participantName"),call.argument("conversationId"),result);
         break;
+      case Methods.removeParticipant:
+        ConversationHandler.removeParticipant(call.argument("participantName"),call.argument("conversationId"),result);
+        break;
       // Get & Listen messages from the specific conversation #
       case Methods.receiveMessages:
       case Methods.subscribeToMessageUpdate:

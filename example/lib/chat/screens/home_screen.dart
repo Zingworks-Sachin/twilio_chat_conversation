@@ -15,7 +15,7 @@ import 'package:twilio_chat_conversation_example/chat/screens/chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String? platformVersion;
-   const HomeScreen({super.key, this.platformVersion});
+  const HomeScreen({super.key, this.platformVersion});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -51,8 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                     width: MediaQuery.of(context).size.width * 0.80,
                     height: MediaQuery.of(context).size.height * 0.08,
-                    child:
-                        SvgPicture.asset("assets/images/twilio_logo_red.svg",color: Colors.red,)),
+                    child: SvgPicture.asset(
+                      "assets/images/twilio_logo_red.svg",
+                      color: Colors.red,
+                    )),
                 SizedBox(
                   height: MediaQuery.of(context).size.width * 0.16,
                 ),
@@ -78,7 +80,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextInputField(
                       icon: const Padding(
                         padding: EdgeInsets.only(top: 0.0),
-                        child: Icon(Icons.person,color: Colors.lightBlueAccent,),
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.lightBlueAccent,
+                        ),
                       ),
                       textCapitalization: TextCapitalization.none,
                       hintText: "",
@@ -116,12 +121,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   titleFontWeight: FontWeight.w600,
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
-                    if (_userNameController.text.trim().isNotEmpty){
+                    if (_userNameController.text.trim().isNotEmpty) {
                       identity == _userNameController.text;
-                      String? accountSid = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_account_sid');
-                      String? apiKey = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_api_key');
-                      String? apiSecret = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_api_secret');
-                      String? serviceSid = await ApiProvider.getEnvironmentKeyByName(keyName: 'twilio_service_sid');
+                      String? accountSid =
+                          await ApiProvider.getEnvironmentKeyByName(
+                              keyName: 'twilio_account_sid');
+                      String? apiKey =
+                          await ApiProvider.getEnvironmentKeyByName(
+                              keyName: 'twilio_api_key');
+                      String? apiSecret =
+                          await ApiProvider.getEnvironmentKeyByName(
+                              keyName: 'twilio_api_secret');
+                      String? serviceSid =
+                          await ApiProvider.getEnvironmentKeyByName(
+                              keyName: 'twilio_service_sid');
                       chatBloc!.add(GenerateTokenEvent(credentials: {
                         "accountSid": accountSid,
                         "apiKey": apiKey,
@@ -129,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "identity": _userNameController.text,
                         "serviceSid": serviceSid
                       }));
-                    }else {
+                    } else {
                       ToastUtility.showToastAtCenter("Please enter user name.");
                     }
                   },
@@ -143,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           if (state is GenerateTokenLoadedState) {
             ProgressBar.dismiss(context);
-            initializeConversationClient(accessToken:state.token);
+            initializeConversationClient(accessToken: state.token);
             //  ProgressBar.dismiss(context);
           }
           if (state is GenerateTokenErrorState) {

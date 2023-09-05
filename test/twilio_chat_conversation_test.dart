@@ -7,18 +7,23 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockTwilioChatConversationPlatform
     with MockPlatformInterfaceMixin
     implements TwilioChatConversationPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
 
   @override
-  Future<String?> createConversation({required String conversationName, required String identity}) {
+  Future<String?> createConversation(
+      {required String conversationName, required String identity}) {
     // TODO: implement createConversation
     throw UnimplementedError();
   }
 
   @override
-  Future<String?> generateToken({required String accountSid, required String apiKey, required String apiSecret, required String identity,required String serviceSid}) {
+  Future<String?> generateToken(
+      {required String accountSid,
+      required String apiKey,
+      required String apiSecret,
+      required String identity,
+      required String serviceSid}) {
     // TODO: implement generateToken
     throw UnimplementedError();
   }
@@ -30,7 +35,8 @@ class MockTwilioChatConversationPlatform
   }
 
   @override
-  Future<List?> getMessages({required String conversationId,int? messageCount}) {
+  Future<List?> getMessages(
+      {required String conversationId, int? messageCount}) {
     // TODO: implement getMessagesFromConversation
     throw UnimplementedError();
   }
@@ -42,13 +48,15 @@ class MockTwilioChatConversationPlatform
   }
 
   @override
-  Future<String?> sendMessage({required String conversationId, required String message}) {
+  Future<String?> sendMessage(
+      {required String conversationId, required String message}) {
     // TODO: implement sendMessage
     throw UnimplementedError();
   }
 
   @override
-  Future<String?> addParticipant({required String conversationId, required String participantName}) {
+  Future<String?> addParticipant(
+      {required String conversationId, required String participantName}) {
     // TODO: implement addParticipant
     throw UnimplementedError();
   }
@@ -89,21 +97,29 @@ class MockTwilioChatConversationPlatform
     throw UnimplementedError();
   }
 
-
+  @override
+  Future<String?> removeParticipant(
+      {required conversationId, required participantName}) {
+    // TODO: implement removeParticipant
+    throw UnimplementedError();
+  }
 }
 
 void main() {
-  final TwilioChatConversationPlatform initialPlatform = TwilioChatConversationPlatform.instance;
+  final TwilioChatConversationPlatform initialPlatform =
+      TwilioChatConversationPlatform.instance;
 
   test('$MethodChannelTwilioChatConversation is the default instance', () {
-    expect(initialPlatform, isInstanceOf<MethodChannelTwilioChatConversation>());
+    expect(
+        initialPlatform, isInstanceOf<MethodChannelTwilioChatConversation>());
   });
 
   test('getPlatformVersion', () async {
-    TwilioChatConversation twilioChatConversationPlugin = TwilioChatConversation();
-    MockTwilioChatConversationPlatform fakePlatform = MockTwilioChatConversationPlatform();
+    TwilioChatConversation twilioChatConversationPlugin =
+        TwilioChatConversation();
+    MockTwilioChatConversationPlatform fakePlatform =
+        MockTwilioChatConversationPlatform();
     TwilioChatConversationPlatform.instance = fakePlatform;
-
     expect(await twilioChatConversationPlugin.getPlatformVersion(), '42');
   });
 }

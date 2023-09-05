@@ -20,7 +20,10 @@ class _DialogWithEditTextState extends State<DialogWithEditText> {
     return AlertDialog(
       contentPadding:
           const EdgeInsets.symmetric(vertical: 2.0, horizontal: 3.0),
-      title: Text(widget.dialogTitle,style: const TextStyle(color: Colors.white),),
+      title: Text(
+        widget.dialogTitle,
+        style: const TextStyle(color: Colors.white),
+      ),
       backgroundColor: Colors.brown[400],
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),

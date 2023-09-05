@@ -31,139 +31,141 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Conversations'),
-          backgroundColor:Colors.black,
-        ),
+      appBar: AppBar(
+        title: const Text('Conversations'),
         backgroundColor: Colors.black,
-        body: BlocConsumer<ChatBloc, ChatStates>(
-            builder: (BuildContext context, ChatStates state) {
-          return Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    height: MediaQuery.of(context).size.height * 0.08,
-                    child:
-                    SvgPicture.asset("assets/images/twilio_logo_red.svg",color: Colors.red,)),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.10,
-                ),
-                CommonTextButtonWidget(
-                  isIcon: false,
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: MediaQuery.of(context).size.width * 0.82,
-                  title: "Create Conversation",
-                  titleFontSize: 14.0,
-                  bgColor: Colors.blueGrey,
-                  borderColor: Colors.white,
-                  titleFontWeight: FontWeight.w600,
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return DialogWithEditText(
-                          onPressed: (enteredText) {
-                            chatBloc!.add(CreateConversationEvent(
-                                conversationName: enteredText,
-                                identity: widget.identity));
-                            Navigator.of(context).pop();
-                          },
-                          dialogTitle: "Create Conversation",
-                        );
-                      },
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.030,
-                ),
-                CommonTextButtonWidget(
-                  isIcon: false,
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: MediaQuery.of(context).size.width * 0.82,
-                  bgColor: Colors.blueGrey,
-                  borderColor: Colors.white,
-                  title: "My Conversations",
-                  titleFontSize: 14.0,
-                  titleFontWeight: FontWeight.w600,
-                  onPressed: () {
-                    chatBloc!.add(SeeMyConversationsEvent());
-                  },
-                )
+      ),
+      backgroundColor: Colors.black,
+      body: BlocConsumer<ChatBloc, ChatStates>(
+          builder: (BuildContext context, ChatStates state) {
+        return Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.80,
+                  height: MediaQuery.of(context).size.height * 0.08,
+                  child: SvgPicture.asset(
+                    "assets/images/twilio_logo_red.svg",
+                    color: Colors.red,
+                  )),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.10,
+              ),
+              CommonTextButtonWidget(
+                isIcon: false,
+                height: MediaQuery.of(context).size.height * 0.06,
+                width: MediaQuery.of(context).size.width * 0.82,
+                title: "Create Conversation",
+                titleFontSize: 14.0,
+                bgColor: Colors.blueGrey,
+                borderColor: Colors.white,
+                titleFontWeight: FontWeight.w600,
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DialogWithEditText(
+                        onPressed: (enteredText) {
+                          chatBloc!.add(CreateConversationEvent(
+                              conversationName: enteredText,
+                              identity: widget.identity));
+                          Navigator.of(context).pop();
+                        },
+                        dialogTitle: "Create Conversation",
+                      );
+                    },
+                  );
+                },
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.030,
+              ),
+              CommonTextButtonWidget(
+                isIcon: false,
+                height: MediaQuery.of(context).size.height * 0.06,
+                width: MediaQuery.of(context).size.width * 0.82,
+                bgColor: Colors.blueGrey,
+                borderColor: Colors.white,
+                title: "My Conversations",
+                titleFontSize: 14.0,
+                titleFontWeight: FontWeight.w600,
+                onPressed: () {
+                  chatBloc!.add(SeeMyConversationsEvent());
+                },
+              )
 
-                // ElevatedButton(
-                //     onPressed: () {
-                //       showDialog(
-                //         context: context,
-                //         builder: (BuildContext context) {
-                //           return DialogWithEditText(
-                //             onPressed: (enteredText) {
-                //               chatBloc!.add(JoinConversionEvent(
-                //                   conversationName: enteredText));
-                //               Navigator.of(context).pop();
-                //             },
-                //           );
-                //         },
-                //       );
-                //       //
-                //     },
-                //     child: const Text("Join Conversation")),
-                // ElevatedButton(
-                //     onPressed: () {
-                //       showDialog(
-                //         context: context,
-                //         builder: (BuildContext context) {
-                //           return DialogWithEditText(
-                //             onPressed: (enteredText) {
-                //               chatBloc!.add(AddParticipantEvent(
-                //                   participantName: enteredText,
-                //                   conversationName: ""));
-                //               Navigator.of(context).pop();
-                //             },
-                //           );
-                //         },
-                //       );
-                //     },
-                //     child: const Text("Add Participant")),
-              ],
+              // ElevatedButton(
+              //     onPressed: () {
+              //       showDialog(
+              //         context: context,
+              //         builder: (BuildContext context) {
+              //           return DialogWithEditText(
+              //             onPressed: (enteredText) {
+              //               chatBloc!.add(JoinConversionEvent(
+              //                   conversationName: enteredText));
+              //               Navigator.of(context).pop();
+              //             },
+              //           );
+              //         },
+              //       );
+              //       //
+              //     },
+              //     child: const Text("Join Conversation")),
+              // ElevatedButton(
+              //     onPressed: () {
+              //       showDialog(
+              //         context: context,
+              //         builder: (BuildContext context) {
+              //           return DialogWithEditText(
+              //             onPressed: (enteredText) {
+              //               chatBloc!.add(AddParticipantEvent(
+              //                   participantName: enteredText,
+              //                   conversationName: ""));
+              //               Navigator.of(context).pop();
+              //             },
+              //           );
+              //         },
+              //       );
+              //     },
+              //     child: const Text("Add Participant")),
+            ],
+          ),
+        );
+      }, listener: (BuildContext context, ChatStates state) {
+        if (state is CreateConversionLoadedState) {
+          ToastUtility.showToastAtBottom(state.conversationAddedStatus);
+        }
+        if (state is JoinConversionLoadedState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                  create: (context) =>
+                      ChatBloc(chatRepository: ChatRepositoryImpl()),
+                  child: ChatDetailsScreen(
+                      conversationName: '',
+                      conversationSid: '',
+                      identity: widget.identity)),
             ),
           );
-        }, listener: (BuildContext context, ChatStates state) {
-          if (state is CreateConversionLoadedState) {
-            ToastUtility.showToastAtBottom(state.conversationAddedStatus);
-          }
-          if (state is JoinConversionLoadedState) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                    create: (context) =>
-                        ChatBloc(chatRepository: ChatRepositoryImpl()),
-                    child: ChatDetailsScreen(
-                        conversationName: '',
-                        conversationSid: '',
-                        identity: widget.identity)),
-              ),
-            );
-          }
-          if (state is SeeMyConversationsLoadedState) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                    create: (context) =>
-                        ChatBloc(chatRepository: ChatRepositoryImpl()),
-                    child: ConversationListScreen(
-                      conversationList: state.conversationList,
-                      identity: widget.identity,
-                    )),
-              ),
-            );
-          }
-        }),
+        }
+        if (state is SeeMyConversationsLoadedState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                  create: (context) =>
+                      ChatBloc(chatRepository: ChatRepositoryImpl()),
+                  child: ConversationListScreen(
+                    conversationList: state.conversationList,
+                    identity: widget.identity,
+                  )),
+            ),
+          );
+        }
+      }),
     );
   }
 }
