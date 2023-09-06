@@ -5,6 +5,7 @@ import 'package:twilio_chat_conversation_example/chat/bloc/chat_events.dart';
 import 'package:twilio_chat_conversation_example/chat/bloc/chat_states.dart';
 import 'package:twilio_chat_conversation_example/chat/common/dialog_with_edittext.dart';
 import 'package:twilio_chat_conversation_example/chat/common/progress_bar.dart';
+import 'package:twilio_chat_conversation_example/chat/common/shared_preference.dart';
 import 'package:twilio_chat_conversation_example/chat/common/toast_utility.dart';
 import 'package:twilio_chat_conversation_example/chat/repository/chat_repository.dart';
 import 'package:twilio_chat_conversation_example/chat/screens/chat_details_screen.dart';
@@ -26,13 +27,18 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
   String? identity;
 
   var conversationName = "";
-
   var conversationSid = "";
+  String loggedInUserIdentity = "";
 
   @override
   void initState() {
     super.initState();
     chatBloc = BlocProvider.of<ChatBloc>(context);
+    getLoggedInUser();
+  }
+
+  void getLoggedInUser() async {
+    loggedInUserIdentity = await SharedPreference.getIdentity();
   }
 
   @override
@@ -250,8 +256,13 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                                         ],
                                       ),
                                       if (state.participantsList[
-                                              participantIndex]["isAdmin"] ==
-                                          false)
+                                                      participantIndex]
+                                                  ["conversationCreatedBy"] ==
+                                              loggedInUserIdentity &&
+                                          (state.participantsList[
+                                                      participantIndex]
+                                                  ["identity"] !=
+                                              loggedInUserIdentity))
                                         IconButton(
                                           onPressed: () async {
                                             // print(
