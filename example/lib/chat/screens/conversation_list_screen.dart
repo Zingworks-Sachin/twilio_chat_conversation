@@ -240,7 +240,7 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                                             padding: const EdgeInsets.only(
                                                 left: 8.0),
                                             child: Text(
-                                              "${state.participantsList[participantIndex]["identity"]} ${(state.participantsList[participantIndex]["isAdmin"])?"(Admin)":""}",
+                                              "${state.participantsList[participantIndex]["identity"]} ${(state.participantsList[participantIndex]["isAdmin"]) ? "(Admin)" : ""}",
                                               style: const TextStyle(
                                                   color: Colors.brown,
                                                   fontSize: 15,
@@ -249,28 +249,32 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                                           ),
                                         ],
                                       ),
-                                      if (state.participantsList[participantIndex]["isAdmin"]== false)IconButton(
-                                        onPressed: () async {
-                                          // print(
-                                          //     "participantsList sid->${state.participantsList[participantIndex]["sid"]}");
-                                          // print(
-                                          //     "conversationList sid->${state.participantsList[participantIndex]["conversationSid"]}");
-                                          chatBloc!.add(RemoveParticipantEvent(
-                                              participantName: state
-                                                      .participantsList[
-                                                  participantIndex]["identity"],
-                                              conversationName:
-                                                  state.participantsList[
-                                                          participantIndex]
-                                                      ["conversationSid"]));
-                                          Navigator.of(context).pop();
-                                        },
-                                        icon: const Icon(
-                                          Icons.delete_forever,
-                                          size: 20,
-                                          color: Colors.red,
-                                        ),
-                                      )
+                                      if (state.participantsList[
+                                              participantIndex]["isAdmin"] ==
+                                          false)
+                                        IconButton(
+                                          onPressed: () async {
+                                            // print(
+                                            //     "participantsList sid->${state.participantsList[participantIndex]["sid"]}");
+                                            // print(
+                                            //     "conversationList sid->${state.participantsList[participantIndex]["conversationSid"]}");
+                                            chatBloc!.add(RemoveParticipantEvent(
+                                                participantName:
+                                                    state.participantsList[
+                                                            participantIndex]
+                                                        ["identity"],
+                                                conversationName:
+                                                    state.participantsList[
+                                                            participantIndex]
+                                                        ["conversationSid"]));
+                                            Navigator.of(context).pop();
+                                          },
+                                          icon: const Icon(
+                                            Icons.delete_forever,
+                                            size: 20,
+                                            color: Colors.red,
+                                          ),
+                                        )
                                     ],
                                   ),
                                 ),
