@@ -1,3 +1,7 @@
+## 1.0.4
+* Added removeParticipant method to remove a participant from a conversation
+* Added isAdmin flag in getParticipants() data
+
 ## 1.0.3
 * Bug fixes
 
