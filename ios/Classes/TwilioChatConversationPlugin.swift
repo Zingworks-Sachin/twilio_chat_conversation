@@ -116,6 +116,7 @@ public class TwilioChatConversationPlugin: NSObject,FlutterPlugin,FlutterStreamH
                       participant["sid"] = user.sid
                       participant["conversationSid"] = user.conversation?.sid
                       participant["dateCreated"] = user.dateCreated
+                      participant["isAdmin"] = (user.conversation?.createdBy == user.identity)
                       listOfParticipants.append(participant)
                   }
               }

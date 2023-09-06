@@ -240,7 +240,7 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                                             padding: const EdgeInsets.only(
                                                 left: 8.0),
                                             child: Text(
-                                              "${state.participantsList[participantIndex]["identity"]}",
+                                              "${state.participantsList[participantIndex]["identity"]} ${(state.participantsList[participantIndex]["isAdmin"])?"(Admin)":""}",
                                               style: const TextStyle(
                                                   color: Colors.brown,
                                                   fontSize: 15,
@@ -249,13 +249,12 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                                           ),
                                         ],
                                       ),
-                                      IconButton(
+                                      if (state.participantsList[participantIndex]["isAdmin"]== false)IconButton(
                                         onPressed: () async {
-                                          print(
-                                              "participantsList sid->${state.participantsList[participantIndex]["sid"]}");
-                                          print(
-                                              "conversationList sid->${state.participantsList[participantIndex]["conversationSid"]}");
-
+                                          // print(
+                                          //     "participantsList sid->${state.participantsList[participantIndex]["sid"]}");
+                                          // print(
+                                          //     "conversationList sid->${state.participantsList[participantIndex]["conversationSid"]}");
                                           chatBloc!.add(RemoveParticipantEvent(
                                               participantName: state
                                                       .participantsList[

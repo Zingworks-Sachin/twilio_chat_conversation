@@ -23,6 +23,7 @@ A Flutter plugin for [Twilio Conversations](https://www.twilio.com/docs/conversa
 - Send Messages
 - Listen to message update whenever new message is received
 - Add participants in the conversation
+- Remove participants from the conversation
 - Get list of participants from the specific conversation
 - Listen to access token expiration
 
@@ -75,6 +76,10 @@ final String? result = await twilioChatConversationPlugin.sendMessage(message:en
 ### Add participant in a conversation
 ```dart
 final String? result = await twilioChatConversationPlugin.addParticipant(participantName:participantName,conversationId:conversationId);
+```
+### Remove participant from a conversation
+```dart
+final String? result = await twilioChatConversationPlugin.removeParticipant(participantName:participantName,conversationId:conversationId);
 ```
 
 ### Get participants from the specific conversation

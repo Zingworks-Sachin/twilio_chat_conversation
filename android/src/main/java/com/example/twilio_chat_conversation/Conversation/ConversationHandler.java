@@ -436,7 +436,7 @@ public class ConversationHandler {
                     participantMap.put("conversationSid",participantList.get(i).getConversation().getSid());
                     participantMap.put("conversationCreatedBy",participantList.get(i).getConversation().getCreatedBy());
                     participantMap.put("dateCreated",participantList.get(i).getConversation().getDateCreated());
-                    participantMap.put("isAdmin", Objects.equals(participantList.get(i).getConversation().getCreatedBy(), conversationClient.getMyIdentity()));
+                    participantMap.put("isAdmin", Objects.equals(participantList.get(i).getConversation().getCreatedBy(), participantList.get(i).getIdentity()));
                     participants.add(participantMap);
                     System.out.println("participantMap->" + participantMap);
                 }
