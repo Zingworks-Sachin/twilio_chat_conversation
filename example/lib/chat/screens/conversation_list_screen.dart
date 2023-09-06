@@ -39,6 +39,7 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
 
   void getLoggedInUser() async {
     loggedInUserIdentity = await SharedPreference.getIdentity();
+    print("loggedInUserIdentity->$loggedInUserIdentity");
   }
 
   @override
