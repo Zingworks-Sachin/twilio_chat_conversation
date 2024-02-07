@@ -1,4 +1,4 @@
-import 'package:flutter_blue_demo/toast_utility.dart';
+import 'package:flutter_blue_demo/utility/toast_utility.dart';
 
 // Singleton class for AlertUtility
 class AlertUtility {

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue_demo/alert_utility.dart';
-import 'package:flutter_blue_demo/background_services.dart';
-import 'package:flutter_blue_demo/bluetooth_services.dart';
-import 'package:flutter_blue_demo/conversion_utility.dart';
+import 'package:flutter_blue_demo/background_service/background_service.dart';
+import 'package:flutter_blue_demo/bluetooth/bluetooth_services.dart';
+import 'package:flutter_blue_demo/utility/alert_utility.dart';
+import 'package:flutter_blue_demo/utility/conversion_utility.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BluetoothActivity {

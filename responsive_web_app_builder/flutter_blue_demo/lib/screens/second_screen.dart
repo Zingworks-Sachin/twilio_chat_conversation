@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue_demo/background_services.dart';
-import 'package:flutter_blue_demo/bluetooth_services.dart';
-import 'package:flutter_blue_demo/toast_utility.dart';
+import 'package:flutter_blue_demo/background_service/background_service.dart';
+import 'package:flutter_blue_demo/bluetooth/bluetooth_services.dart';
+import 'package:flutter_blue_demo/utility/toast_utility.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class DashboardScreen extends StatefulWidget {
