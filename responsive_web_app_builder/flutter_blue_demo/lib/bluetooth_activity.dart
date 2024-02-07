@@ -43,12 +43,10 @@ class BluetoothActivity {
   static const int caneStateLocateMeFound = 0x80;
   static const int vertical = 1;
   static const int notVertical = 0;
-
   static int caneDataDelay = 6;
   static int caneAlertThresholdValue = 10;
   static bool isDeviceConnected = false;
   static bool isDeviceConnectedInForeground = false;
-
   static bool caneDropFlag = true;
   static DateTime lastDisconnectedAlertDateTime =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
@@ -93,11 +91,10 @@ class BluetoothActivity {
   }) async {
     BluetoothDevice? bluetoothDevice =
         await getDeviceFromConnectedDevicesList(macId: macId);
-    print("flutterBlue.connectedDevice->$bluetoothDevice");
     print("flutterBlue.connectedDevice->${bluetoothDevice?.isConnected}");
     if (bluetoothDevice?.isConnected == true) {
-      print("flutterBlue.connectedDevice->${bluetoothDevice?.servicesList}");
-
+      await backgroundServicesUtility.sendDataFromBackgroundServiceToUI(
+          "bluetoothDeviceState", {"BluetoothDeviceState": "connected"});
       discoverServices(bluetoothDevice: bluetoothDevice!);
     } else {
       startScan(

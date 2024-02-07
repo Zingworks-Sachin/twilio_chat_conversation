@@ -22,7 +22,7 @@ class BackgroundServicesUtility {
 
   final service = FlutterBackgroundService();
   static Timer? geofenceTimer;
-  static ServiceInstance? serviceInstance;
+  ServiceInstance? serviceInstance;
   BluetoothServices flutterBluePlusUtility = BluetoothServices.instance;
   BluetoothActivity bluetoothActivity = BluetoothActivity.instance;
   Future<bool> get isBackgroundServiceRunning {
@@ -42,8 +42,7 @@ class BackgroundServicesUtility {
     return flutterBluePlusUtility.adapterStateNow;
   }
 
-  Future startBackgroundService({required String serviceType}) async {
-    debugPrint("startBackgroundService called");
+  Future<void> configureBackgroundService() async {
     await service.configure(
       androidConfiguration: AndroidConfiguration(
         // this will be executed when app is in foreground or background in separated isolate
@@ -65,7 +64,9 @@ class BackgroundServicesUtility {
         onBackground: onStartIosBackgroundService,
       ),
     );
-    // service.startService();
+  }
+
+  Future startBackgroundService({required String serviceType}) async {
     if (serviceType == "On") {
       service.startService();
     } else {
@@ -131,7 +132,7 @@ class BackgroundServicesUtility {
         case BluetoothAdapterState.on:
           debugPrint("BluetoothAdapterState on");
           instance.startBleOperations(
-              macId: "48:23:35:00:86:D9",
+              macId: "48:23:35:00:79:1C",
               shouldDiscoverService: true,
               enableShippingMode: false);
           break;
@@ -149,15 +150,15 @@ class BackgroundServicesUtility {
           break;
       }
     });
-    if (instance.flutterBluePlusUtility.adapterStateNow ==
-        BluetoothAdapterState.on) {
-      instance.startBleOperations(
-          macId: "48:23:35:00:86:D9",
-          shouldDiscoverService: true,
-          enableShippingMode: false);
-    } else {
-      instance.service.invoke("bluetoothState", {"bluetoothState": "off"});
-    }
+    // if (instance.flutterBluePlusUtility.adapterStateNow ==
+    //     BluetoothAdapterState.on) {
+    //   instance.startBleOperations(
+    //       macId: "48:23:35:00:79:1C",
+    //       shouldDiscoverService: true,
+    //       enableShippingMode: false);
+    // } else {
+    //   instance.service.invoke("bluetoothState", {"bluetoothState": "off"});
+    // }
   }
 
   startBleOperations(
@@ -166,13 +167,14 @@ class BackgroundServicesUtility {
       required bool enableShippingMode}) async {
     debugPrint("macId:- $macId");
     bluetoothActivity.startBleOperations(
-        macId: macId,
+        macId: "48:23:35:00:79:1C",
         shouldDiscoverService: shouldDiscoverService,
         enableShippingMode: enableShippingMode);
   }
 
-  void sendDataFromBackgroundServiceToUI(String method,
-      [Map<String, dynamic>? args]) {
+  Future<void> sendDataFromBackgroundServiceToUI(String method,
+      [Map<String, dynamic>? args]) async {
+    print("serviceInstance->$serviceInstance");
     serviceInstance?.invoke(method, args);
   }
 
@@ -200,7 +202,7 @@ class BackgroundServicesUtility {
     service.on("startBleOperation").listen((event) {
       print("startBleOperation called");
       startBleOperations(
-          macId: "48:23:35:00:86:D9",
+          macId: "48:23:35:00:79:1C",
           shouldDiscoverService: true,
           enableShippingMode: true);
     });
@@ -209,26 +211,11 @@ class BackgroundServicesUtility {
       service.stopSelf();
       debugPrint("stopService called");
     });
-    // service.on('startBle').listen((event) async {
-    //   debugPrint("startBle called");
-    //   bool isBluetoothOn = instance.flutterBluePlusUtility.adapterStateNow ==
-    //       BluetoothAdapterState.on;
-    //   debugPrint("isBluetoothOn->$isBluetoothOn");
-    //   if (isBluetoothOn) {
-    //     await instance.startBleOperations("", true, false);
-    //     debugPrint(
-    //         "background services page startBackgroundServiceForAndroidAndIOS method ");
-    //   } else {
-    //     serviceInstance?.invoke("bluetoothState", {"bluetoothState": "off"});
-    //   }
-    // });
     service.on('denyButtonClick').listen((event) {
       debugPrint("denyButtonClick called");
     });
     service.on('disconnectDevice').listen((event) {
       debugPrint("disconnectDevice called");
-      // FlutterBlueUtilityBackground.reInitializeBle();
-      // FlutterBlueUtilityBackground.stopScan();
       serviceInstance?.invoke(
           "bluetoothDeviceState", {"BluetoothDeviceState": "disconnected"});
     });
@@ -240,10 +227,10 @@ class BackgroundServicesUtility {
     instance.listenToEventsFromUI(service);
     DartPluginRegistrant.ensureInitialized();
     WidgetsFlutterBinding.ensureInitialized();
-    serviceInstance = service;
-    listenToBluetoothAdapterState();
+    instance.serviceInstance = service;
     Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (service is AndroidServiceInstance) {
+        instance.serviceInstance = service;
         if (await service.isForegroundService()) {
           /// OPTIONAL for use custom notification
           /// the notification id must be equals with AndroidConfiguration when you call configure() method.
@@ -269,8 +256,10 @@ class BackgroundServicesUtility {
             ),
           );
         }
+        service.on("method");
       }
     });
-    startGeofenceAndLocationServices();
+    // listenToBluetoothAdapterState();
+    // startGeofenceAndLocationServices();
   }
 }

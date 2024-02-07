@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_demo/background_services.dart';
 import 'package:flutter_blue_demo/second_screen.dart';
+import 'package:flutter_blue_demo/toast_utility.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class FirstScreen extends StatefulWidget {
@@ -30,16 +31,17 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 
   listenToBackgroundServices() {
+    print(
+        "backgroundServicesUtility.service.=>${backgroundServicesUtility.service.hashCode}");
     backgroundServicesUtility.service
         .on("bluetoothDeviceState")
         .listen((connectionStatus) {
       debugPrint('Value from connectionStatus: $connectionStatus');
-      // print(
-      //     "backgroundServicesUtility.flutterBluePlusUtility.connectedDevices->${backgroundServicesUtility.bluetoothConnectionState}");
       switch (connectionStatus?["BluetoothConnectionState"]) {
         case "disconnected":
           backgroundServicesUtility.bluetoothConnectionState =
               BluetoothConnectionState.disconnected;
+          ToastUtility.showToastAtCenter("Amicane is disconnected");
           break;
         case "connecting":
           backgroundServicesUtility.bluetoothConnectionState =
@@ -51,7 +53,7 @@ class _FirstScreenState extends State<FirstScreen> {
           Future.delayed(const Duration(milliseconds: 1500), () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SecondScreen()),
+              MaterialPageRoute(builder: (context) => const DashboardScreen()),
             );
           });
           break;
@@ -61,22 +63,17 @@ class _FirstScreenState extends State<FirstScreen> {
 
   initData() {
     listenToBackgroundServices();
-    startBackgroundService();
+    checkBackgroundService();
   }
 
-  startBackgroundService() async {
+  checkBackgroundService() async {
     bool isBackgroundServiceRunning =
         await backgroundServicesUtility.isBackgroundServiceRunning;
     if (isBackgroundServiceRunning) {
-      checkBluetoothState();
+      backgroundServicesUtility.service.invoke("startBleOperation");
     } else {
       backgroundServicesUtility.startBackgroundService(serviceType: "On");
     }
-  }
-
-  checkBluetoothState() {
-    if (backgroundServicesUtility.bluetoothAdapterState ==
-        BluetoothAdapterState.on) {}
   }
 
   @override
@@ -90,7 +87,7 @@ class _FirstScreenState extends State<FirstScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const SecondScreen()),
+            MaterialPageRoute(builder: (context) => const DashboardScreen()),
           );
         },
         tooltip: 'Increment',

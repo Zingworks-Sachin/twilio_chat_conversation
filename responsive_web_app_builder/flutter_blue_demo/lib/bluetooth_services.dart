@@ -126,8 +126,6 @@ class BluetoothServices {
     return servicesList
         .where((service) => service.uuid.str == serviceUuid.str)
         .expand((services) => services.characteristics)
-        // .where((service) => service.uuid.str == serviceUuid.str)
-        // .where((characteristic) => characteristic.uuid == serviceUuid.str)
         .toList();
   }
 }

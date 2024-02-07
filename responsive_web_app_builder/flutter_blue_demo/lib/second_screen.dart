@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_demo/background_services.dart';
 import 'package:flutter_blue_demo/bluetooth_services.dart';
+import 'package:flutter_blue_demo/toast_utility.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
-class SecondScreen extends StatefulWidget {
-  const SecondScreen({Key? key}) : super(key: key);
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
-  State<SecondScreen> createState() => _SecondScreenState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _SecondScreenState extends State<SecondScreen> {
+class _DashboardScreenState extends State<DashboardScreen> {
   final BackgroundServicesUtility backgroundServicesUtility =
       BackgroundServicesUtility.instance;
   final BluetoothServices bluetoothService = BluetoothServices.instance;
@@ -29,6 +31,32 @@ class _SecondScreenState extends State<SecondScreen> {
     } else {
       backgroundServicesUtility.startBackgroundService(serviceType: "On");
     }
+    listenToBackgroundServices();
+  }
+
+  listenToBackgroundServices() {
+    backgroundServicesUtility.service
+        .on("bluetoothDeviceState")
+        .listen((connectionStatus) {
+      debugPrint(
+          'Value from connectionStatus on 2nd screen: $connectionStatus');
+      ToastUtility.showToastAtCenter("Amicane is connected");
+
+      switch (connectionStatus?["BluetoothConnectionState"]) {
+        case "disconnected":
+          backgroundServicesUtility.bluetoothConnectionState =
+              BluetoothConnectionState.disconnected;
+          break;
+        case "connecting":
+          backgroundServicesUtility.bluetoothConnectionState =
+              BluetoothConnectionState.connecting;
+          break;
+        case "connected":
+          backgroundServicesUtility.bluetoothConnectionState =
+              BluetoothConnectionState.connected;
+          break;
+      }
+    });
   }
 
   @override
