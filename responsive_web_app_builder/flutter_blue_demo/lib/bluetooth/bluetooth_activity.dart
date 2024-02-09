@@ -182,7 +182,6 @@ class BluetoothActivity {
       });
       angleCharacteristic.onValueReceived.listen((data) async {
         int angle = ConversionUtility.convertBytesToInt16(data: data);
-        debugPrint("angle->$angle");
         await updateCaneDataOnAngleChange(angle: angle);
       });
 
@@ -195,6 +194,7 @@ class BluetoothActivity {
 
   static updateCaneDataOnAngleChange({required int angle}) async {
     if (angle < 0) angle = angle + 360;
+    debugPrint("angle->$angle");
     if (angle >= 0 && angle <= 360) {
       thresholdAngle1 = 90 - thresholdAngle;
       thresholdAngle2 = 90 + thresholdAngle;
@@ -205,8 +205,10 @@ class BluetoothActivity {
         if (verticalCount > thresholdCount) {
           verticalCount = 0;
           currentPosition = vertical;
+          print("Cane is vertical1");
+
           if (earlierPosition == notVertical) {
-            if (kDebugMode) print("Cane orientation changed!...");
+            print("Cane is vertical");
             if (!caneDropFlag) {
               caneDropFlag = true;
               // deactivateAlertOnCaneVertical(
@@ -230,6 +232,9 @@ class BluetoothActivity {
             if (earlierPosition == vertical || earlierPosition == -1) {
               if (kDebugMode) print("Cane orientation changed!...");
               AlertUtility.instance.sendAlert(alertType: "Cane drop alert");
+              if (caneDropFlag) {
+                caneDropFlag = false;
+              }
             }
             earlierPosition = notVertical;
           }
